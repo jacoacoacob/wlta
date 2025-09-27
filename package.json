@@ -2,6 +2,7 @@
   "name": "wlta",
   "private": true,
   "type": "module",
+  "license": "CC BY-NC-SA 4.0",
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
