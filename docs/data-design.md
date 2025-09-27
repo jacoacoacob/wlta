@@ -1,27 +1,61 @@
 # Data Design
-This document is the output of the exercies outlined in https://kb.databasedesignbook.com/posts/google-calendar/
+_This document is the output of the exercies outlined in https://kb.databasedesignbook.com/posts/google-calendar/_
+
 
 ## Anchors
-> Basically the only thing that anchors handle is IDs and counting.  All the data is handled by attributes, discussed in the next section.
+> Basically the only thing that anchors handle is IDs and counting. All the data is handled by attributes, discussed in the next section.
 
-| Anchor            | Physical Table  |
-| ---               | ---             
-| User              |
-| Tag               |
-| Tag Score         |                 
-| Activity          |
-| Activity Template |
-| Activity Search   |
+I'm adding a **Description** column here to give a high-level idea of what each Anchor represents.
+
+| Anchor              | Description                                                                 | Physical Table  |
+| ---                 | ---                                                                         | ---             |
+| `User`              | A person who uses the app                                                   |
+| `Tag`               | A specific kind of activity                                                 |
+| `Tag Score`         | How much a user likes or dislikes the kind of activity described by a `Tag` |             
+| `Activity`          | What a `User` did and for how long                                          |
+| `Activity Template` | Data to pre-populate a form to create an `Activity`                         |
+| `Activity Search`   | Data to pre-populate a search form to retrieve a list of saved `Activities` |
 
 ## Attributes
 > Attributes store the actual information about anchors.
 
-| Anchor | Question                        | Logical Type  | Example Value                         | Physical Column | Physical Type |
-| ---    | ---                             | ---           | ---                                   | ---             | ---           |
-| Tag    | What is the name of this tag    | `string`      | dishes                                |                 |               |
-| Tag    | How would you describe this tag | `string`      | putting the dishes in the dishwasher  |                 |               |
-| Tag    | When was this tag created       | `timestamp`   | 2025-09-27T15:33:17.287Z              |                 |               |
-| Tag    | When was this tag updated       | `timestamp`   | 2025-09-29T18:19:46.931Z              |                 |               |
+### `User` Attributes
+A person who uses the app.
+
+| Question                        | Logical Type  | Example Value                          | Physical Column | Physical Type |
+| ---                             | ---           | ---                                    | ---             | ---           |
+| What is the user's display name | `string`      | my_name                                |                 |               |
+
+### `Tag` Attributes
+A specific kind of activity
+
+| Question                        | Logical Type  | Example Value                          | Physical Column | Physical Type |
+| ---                             | ---           | ---                                    | ---             | ---           |
+| What is the name of this tag    | `string`      | dishes                                 |                 |               |
+| How would you describe this tag | `string`      | putting the dishes in the dishwasher   |                 |               |
+| When was this tag created       | `timestamp`   | 2025-09-27T15:33:17.287Z               |                 |               |
+| When was this tag updated       | `timestamp`   | 2025-09-29T18:19:46.931Z               |                 |               |
+
+### `Tag Score` Attributes
+How much a user likes or dislikes the kind of activity described by a [`Tag`](#tag-attributes)
+
+| Question                        | Logical Type  | Example Value                          | Physical Column | Physical Type |
+| ---                             | ---           | ---                                    | ---             | ---           |
+| What is the name of this tag    | `string`      | dishes                                 |                 |               |
+| How would you describe this tag | `string`      | putting the dishes in the dishwasher   |                 |               |
+| When was this tag created       | `timestamp`   | 2025-09-27T15:33:17.287Z               |                 |               |
+| When was this tag updated       | `timestamp`   | 2025-09-29T18:19:46.931Z               |                 |               |
+
+### `Activity` Attributes
+What a [`User`](#user-attributes) did and for how long
+
+| Question                                                  | Logical Type  | Example Value             | Physical Column  | Physical Type |
+| ---                                                       | ---           | ---                       | ---              | ---           |
+| What text shows up as the title on a listing page         | `string`      | dishes and counters       |                  |               |
+| What extra description does the user see on a detail page | `string`      | idk                       |                  |               |
+| When did it start                                         | `timestamp`   | 2025-09-27T15:33:17.287Z  |
+| When did it end                                           | `timestamp`   | 2025-09-29T18:19:46.931Z  |  
+
 
 ## Links
 > Attributes cannot contain IDs. Instead, when two anchors are involved, we need to use links
@@ -46,7 +80,11 @@ _a note on cardnality notation with help from https://stackoverflow.com/a/339738
 
 `1:1` (or `–`) represents one-to-one relationships
 
+### `User` < `Tag` 
+A [`User`](#user-attributes) creates multiple [`Tags`](#tag-attributes).
+A [`Tag`](#tag-attributes) is created by one [`User`](#user-attributes).
 
-| Anchor_1 * Anchor_2 | Sentences                                               | Cardnality  | Physical Column |
-| ---                 | ---                                                     | ---         | ---             |
-| User < Tag          | User creates multiple Tags. Tag is created by one user. | 1:n         |                 |
+| Cardnality  | Physical Column |
+| ---         | ---             |
+| 1:n         |                 |
+
