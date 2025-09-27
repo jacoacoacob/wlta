@@ -5,23 +5,23 @@ _This document is the output of the exercies outlined in https://kb.databasedesi
 ## Anchors
 > Basically the only thing that anchors handle is IDs and counting. All the data is handled by attributes, discussed in the next section.
 
-| Anchor                                | Physical Table  |
-| ---                                   | ---             |
-| [`User`](#user-attributes)            |                 
-| [`Tag`](#tag-attributes)              |
-| [`Tag Score`](#tag-score-attributes)  |             
-| [`Activity`](#activity-attributes)    |
-| [`Activity Template`](#activity-template-attributes) |                          |
-| [`Activity Search`]()   | Data to pre-populate a search form to retrieve a list of saved `Activities` |
+| Anchor                                                | Physical Table  |
+| ---                                                   | ---             |
+| [`User`](#user-attributes)                            |
+| [`Tag`](#tag-attributes)                              |
+| [`Tag Score`](#tag-score-attributes)                  |
+| [`Activity`](#activity-attributes)                    |
+| [`Activity Template`](#activity-template-attributes)  |
+| [`Activity Search`](#activity-attributes)             |
 
 ## Attributes
 > Attributes store the actual information about anchors.
 
 ### `User` Attributes
-| Question                            | Logical Type  | Example Value               | Physical Column | Physical Type |
-| ---                                 | ---           | ---                         | ---             | ---           |
-| What is the user's display name     | `string`      | my_name                     |                 |               |
-| Does the user have a profile photo  | `string`      | https://link.com/to/photo   |                 |               |
+| Question                            | Logical Type  | Example Value                   | Physical Column | Physical Type |
+| ---                                 | ---           | ---                             | ---             | ---           |
+| What is the user's display name     | `string`      | my_name                         |                 |               |
+| Does the user have a profile photo  | `string`      | assets.myapp.com/user-id/photo  |                 |               |
 
 ### `Tag` Attributes
 | Question                                              | Logical Type  | Example Value                          | Physical Column | Physical Type |
@@ -94,6 +94,40 @@ A [`Tag`](#tag-attributes) is created by one [`User`](#user-attributes).
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
 | 1:n         |                           |
+
+### `User` < `Tag Score` 
+A [`User`](#user-attributes) creates multiple [`Tag Scores`](#tag-score-attributes).
+A [`Tag Score`](#tag-score-attributes) is created by one [`User`](#user-attributes).
+
+| Cardnality  | Physical Table or Column  |
+| ---         | ---                       |
+| 1:n         |                           |
+
+### `User` < `Activity` 
+A [`User`](#user-attributes) creates multiple [`Activities`](#activity-attributes).
+A [`Activity`](#activity-attributes) is created by one [`User`](#user-attributes).
+
+| Cardnality  | Physical Table or Column  |
+| ---         | ---                       |
+| 1:n         |                           |
+
+### `User` < `Activity Template` 
+A [`User`](#user-attributes) creates multiple [`Activity Templates`](#activity-template-attributes).
+A [`Activity Template`](#activity-template-attributes) is created by one [`User`](#user-attributes).
+
+| Cardnality  | Physical Table or Column  |
+| ---         | ---                       |
+| 1:n         |                           |
+
+### `User` < `Activity Search` 
+A [`User`](#user-attributes) creates multiple [`Activity Searchs`](#activity-search-attributes).
+A [`Activity Search`](#activity-search-attributes) is created by one [`User`](#user-attributes).
+
+| Cardnality  | Physical Table or Column  |
+| ---         | ---                       |
+| 1:n         |                           |
+
+
 
 ### `Tag` = `Activity`
 A [`Tag`](#tag-attributes) may be linked to multiple [`Activities`](#activity-attributes).
