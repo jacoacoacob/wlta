@@ -5,56 +5,63 @@ _This document is the output of the exercies outlined in https://kb.databasedesi
 ## Anchors
 > Basically the only thing that anchors handle is IDs and counting. All the data is handled by attributes, discussed in the next section.
 
-I'm adding a **Description** column here to give a high-level idea of what each Anchor represents.
-
-| Anchor              | Description                                                                 | Physical Table  |
-| ---                 | ---                                                                         | ---             |
-| `User`              | A person who uses the app                                                   |
-| `Tag`               | A specific kind of activity                                                 |
-| `Tag Score`         | How much a user likes or dislikes the kind of activity described by a `Tag` |             
-| `Activity`          | What a `User` did and for how long                                          |
-| `Activity Template` | Data to pre-populate a form to create an `Activity`                         |
-| `Activity Search`   | Data to pre-populate a search form to retrieve a list of saved `Activities` |
+| Anchor                                | Physical Table  |
+| ---                                   | ---             |
+| [`User`](#user-attributes)            |                 
+| [`Tag`](#tag-attributes)              |
+| [`Tag Score`](#tag-score-attributes)  |             
+| [`Activity`](#activity-attributes)    |
+| [`Activity Template`](#activity-template-attributes) |                          |
+| [`Activity Search`]()   | Data to pre-populate a search form to retrieve a list of saved `Activities` |
 
 ## Attributes
 > Attributes store the actual information about anchors.
 
 ### `User` Attributes
-A person who uses the app.
-
-| Question                        | Logical Type  | Example Value                          | Physical Column | Physical Type |
-| ---                             | ---           | ---                                    | ---             | ---           |
-| What is the user's display name | `string`      | my_name                                |                 |               |
+| Question                            | Logical Type  | Example Value               | Physical Column | Physical Type |
+| ---                                 | ---           | ---                         | ---             | ---           |
+| What is the user's display name     | `string`      | my_name                     |                 |               |
+| Does the user have a profile photo  | `string`      | https://link.com/to/photo   |                 |               |
 
 ### `Tag` Attributes
-A specific kind of activity
-
-| Question                        | Logical Type  | Example Value                          | Physical Column | Physical Type |
-| ---                             | ---           | ---                                    | ---             | ---           |
-| What is the name of this tag    | `string`      | dishes                                 |                 |               |
-| How would you describe this tag | `string`      | putting the dishes in the dishwasher   |                 |               |
-| When was this tag created       | `timestamp`   | 2025-09-27T15:33:17.287Z               |                 |               |
-| When was this tag updated       | `timestamp`   | 2025-09-29T18:19:46.931Z               |                 |               |
+| Question                                              | Logical Type  | Example Value                          | Physical Column | Physical Type |
+| ---                                                   | ---           | ---                                    | ---             | ---           |
+| What kind of activity does this tag represent         | `string`      | dishes                                 |                 |               |
+| Do you want to describe this activity in more detail  | `string`      | putting the dishes in the dishwasher   |                 |               |
+| When was this tag created                             | `timestamp`   | 2025-09-27T15:33:17.287Z               |                 |               |
+| When was this tag updated                             | `timestamp`   | 2025-09-29T18:19:46.931Z               |                 |               |
 
 ### `Tag Score` Attributes
-How much a user likes or dislikes the kind of activity described by a [`Tag`](#tag-attributes)
+| Question                                                                                                                | Logical Type  | Example Value             | Physical Column | Physical Type |
+| ---                                                                                                                     | ---           | ---                       | ---             | ---           |
+| How much does a [`User`](#user-attributes) like or dislike doing the activity represented by a [`Tag`](#tag-attributes) | `int`         | 2                         |                 |               |
+| Do you want to describe this score in more detail                                                                       | `string`      | I was really tired        |                 |               |
+| When was the tag score created                                                                                          | `timestamp`   | 2025-09-27T15:33:17.287Z  |                 |               |
+| When was the tag score updated                                                                                          | `timestamp`   | 2025-09-29T18:19:46.931Z  |                 |               |
 
-| Question                        | Logical Type  | Example Value                          | Physical Column | Physical Type |
-| ---                             | ---           | ---                                    | ---             | ---           |
-| What is the name of this tag    | `string`      | dishes                                 |                 |               |
-| How would you describe this tag | `string`      | putting the dishes in the dishwasher   |                 |               |
-| When was this tag created       | `timestamp`   | 2025-09-27T15:33:17.287Z               |                 |               |
-| When was this tag updated       | `timestamp`   | 2025-09-29T18:19:46.931Z               |                 |               |
 
 ### `Activity` Attributes
-What a [`User`](#user-attributes) did and for how long
+| Question             | Logical Type  | Example Value             | Physical Column  | Physical Type |
+| ---                  | ---           | ---                       | ---              | ---           |
+| When did it start    | `timestamp`   | 2025-09-27T15:33:17.287Z  |
+| When did it end      | `timestamp`   | 2025-09-29T18:19:46.931Z  |  
+| When was it created  | `timestamp`   | 2025-09-29T18:19:46.931Z  |  
+| When was it updated  | `timestamp`   | 2025-09-29T18:19:46.931Z  |  
 
-| Question                                                  | Logical Type  | Example Value             | Physical Column  | Physical Type |
-| ---                                                       | ---           | ---                       | ---              | ---           |
-| What text shows up as the title on a listing page         | `string`      | dishes and counters       |                  |               |
-| What extra description does the user see on a detail page | `string`      | idk                       |                  |               |
-| When did it start                                         | `timestamp`   | 2025-09-27T15:33:17.287Z  |
-| When did it end                                           | `timestamp`   | 2025-09-29T18:19:46.931Z  |  
+
+### `Activity Template` Attributes
+Data to pre-populate a form to create an [`Activity`](#activity-attributes)
+
+| Question                                                               | Logical Type  | Example Value             | Physical Column  | Physical Type  |
+| ---                                                                    | ---           | ---                       | ---              | ---            |
+| What title does a user see when they're browsing `Activity Templates`  | `string`      | idk                       |                  |                |
+
+### `Activity Search` Attributes
+Data to pre-populate a form to create an [`Activity`](#activity-attributes)
+| Question                                                               | Logical Type  | Example Value                                            | Physical Column  | Physical Type  |
+| ---                                                                    | ---           | ---                                                      | ---              | ---            |
+| What title does a user see when they're browsing `Activity Templates`  | `string`      | idk                                                      |                  |                |
+| What kind of date/time range will this search be bounded by            | `string`      | "last 7 days" or "<start_timestamp> - <end_timestamp>"   |
 
 
 ## Links
@@ -84,7 +91,14 @@ _a note on cardnality notation with help from https://stackoverflow.com/a/339738
 A [`User`](#user-attributes) creates multiple [`Tags`](#tag-attributes).
 A [`Tag`](#tag-attributes) is created by one [`User`](#user-attributes).
 
-| Cardnality  | Physical Column |
-| ---         | ---             |
-| 1:n         |                 |
+| Cardnality  | Physical Table or Column  |
+| ---         | ---                       |
+| 1:n         |                           |
 
+### `Tag` = `Activity`
+A [`Tag`](#tag-attributes) may be linked to multiple [`Activities`](#activity-attributes).
+An [`Activity`](#activity-attributes) may be linked to multiple [`Tags`](#tag-attributes).
+
+| Cardnality  | Physical Table or Column  |
+| ---         | ---                       |
+| m:n         |                           |
