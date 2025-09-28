@@ -17,6 +17,7 @@ Additionally, each anchor can be assumed to have attributes to answer
 | Anchor                                                | Physical Table  |
 | ---                                                   | ---             |
 | [`User`](#user-attributes)                            |
+| [`Category`](#category-attributes)                    |
 | [`Tag`](#tag-attributes)                              |
 | [`Tag Score`](#tag-score-attributes)                  |
 | [`Activity`](#activity-attributes)                    |
@@ -32,12 +33,24 @@ Additionally, each anchor can be assumed to have attributes to answer
 | What is the user's display name     | `string`      | my_name                         |                 |               |
 | Does the user have a profile photo  | `string`      | assets.myapp.com/user-id/photo  |                 |               |
 
-### `Tag` Attributes
-| Question                                              | Logical Type  | Example Value                          | Physical Column | Physical Type |
-| ---                                                   | ---           | ---                                    | ---             | ---           |
-| What kind of activity does this tag represent         | `string`      | dishes                                 |                 |               |
-| Do you want to describe this activity in more detail  | `string`      | putting the dishes in the dishwasher   |                 |               |
+- [`User` < `Category`](#user--category)
+- [`User` < `Tag`](#user--tag)
+- [`User` < `Tag Score`](#user--tag-score)
+- [`User` < `Activity`](#user--activity)
+- [`User` < `Activity Template`](#user--activity-template)
+- [`User` < `Activity Search`](#user--activity-search)
 
+### `Category` Attributes
+| Question                                                    | Logical Type  | Example Value                                 | Physical Column | Physical Type |
+| ---                                                         | ---           | ---                                           | ---             | ---           |
+| What general kind of activity does this category represent  | `string`      | cleaning, leisure, money job, admin           |                 |               |
+| Do you want to describe this category in more detail        | `string`      | making appointments, balancing budgets, etc.  |                 |               |
+
+### `Tag` Attributes
+| Question                                                | Logical Type  | Example Value                          | Physical Column | Physical Type |
+| ---                                                     | ---           | ---                                    | ---             | ---           |
+| What specific kind of activity does this tag represent  | `string`      | dishes, clean stove, cooking           |                 |               |
+| Do you want to describe this activity in more detail    | `string`      | putting the dishes in the dishwasher   |                 |               |
 
 ### `Tag Score` Attributes
 | Question                                                                                                                | Logical Type  | Example Value             | Physical Column | Physical Type |
@@ -61,10 +74,10 @@ Data to pre-populate a form to create an [`Activity`](#activity-attributes)
 
 ### `Activity Search` Attributes
 Data to pre-populate a form to create an [`Activity`](#activity-attributes)
-| Question                                                               | Logical Type  | Example Value                                            | Physical Column  | Physical Type  |
-| ---                                                                    | ---           | ---                                                      | ---              | ---            |
-| What title does a user see when they're browsing `Activity Templates`  | `string`      | idk                                                      |                  |                |
-| What kind of date/time range will this search be bounded by            | `string`      | "last 7 days" or "<start_timestamp> - <end_timestamp>"   |
+| Question                                                               | Logical Type  | Example Value                                       | Physical Column  | Physical Type  |
+| ---                                                                    | ---           | ---                                                 | ---              | ---            |
+| What title does a user see when they're browsing `Activity Templates`  | `string`      | last 7 days                                         |                  |                |
+| What kind of date/time range will this search be bounded by            | `enum`        | `between t1 and t1 - interval`, `between t1 and t2` |
 
 
 ## Links
@@ -89,6 +102,14 @@ _a note on cardnality notation with help from https://stackoverflow.com/a/339738
 `1:n` (or `<`) represents one-to-many relationships.
 
 `1:1` (or `–`) represents one-to-one relationships
+
+### `User` < `Category` 
+A [`User`](#user-attributes) creates multiple [`Categories`](#category-attributes).
+A [`Category`](#category-attributes) is created by one [`User`](#user-attributes).
+
+| Cardnality  | Physical Table or Column  |
+| ---         | ---                       |
+| 1:n         |                           |
 
 ### `User` < `Tag` 
 A [`User`](#user-attributes) creates multiple [`Tags`](#tag-attributes).
@@ -124,11 +145,19 @@ An [`Activity Template`](#activity-template-attributes) is created by one [`User
 
 ### `User` < `Activity Search` 
 A [`User`](#user-attributes) creates multiple [`Activity Searches`](#activity-search-attributes).
-A [`Activity Search`](#activity-search-attributes) is created by one [`User`](#user-attributes).
+An [`Activity Search`](#activity-search-attributes) is created by one [`User`](#user-attributes).
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
 | 1:n         |                           |
+
+### `Category` = `Tag`
+A [`Category`](#category-attributes) may be linked to multiple [`Tags`](#tag-attributes).
+A [`Tag`](#tag-attributes) may be linked to multiple [`Categories`](#category-attributes).
+
+| Cardnality  | Physical Table or Column  |
+| ---         | ---                       |
+| m:n         |                           |
 
 ### `Tag` = `Activity`
 A [`Tag`](#tag-attributes) may be linked to multiple [`Activities`](#activity-attributes).
