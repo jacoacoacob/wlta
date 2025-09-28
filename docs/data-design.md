@@ -34,7 +34,7 @@ Additionally, each anchor can be assumed to have attributes to answer
 | Does the user have a profile photo  | `string`      | assets.myapp.com/user-id/photo  |                 |               |
 
 <details>
-<summary>`User` Links</summary>
+<summary><code>User</code> Links</summary>
 
 - [`User` < `Category`](#user--category)
 - [`User` < `Tag`](#user--tag)
