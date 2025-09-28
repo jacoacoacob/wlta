@@ -50,11 +50,28 @@ Additionally, each anchor can be assumed to have attributes to answer
 | What general kind of activity does this category represent  | `string`      | cleaning, leisure, money job, admin           |                 |               |
 | Do you want to describe this category in more detail        | `string`      | making appointments, balancing budgets, etc.  |                 |               |
 
+<details>
+<summary><code>Category</code> Links</summary>
+
+- [`Category` > `User`](#user--category)
+- [`Category` = `Tag`](#category--tag)
+</details>
+
 ### `Tag` Attributes
 | Question                                                | Logical Type  | Example Value                          | Physical Column | Physical Type |
 | ---                                                     | ---           | ---                                    | ---             | ---           |
 | What specific kind of activity does this tag represent  | `string`      | dishes, clean stove, cooking           |                 |               |
 | Do you want to describe this activity in more detail    | `string`      | putting the dishes in the dishwasher   |                 |               |
+
+<details>
+<summary><code>Tag</code> Links</summary>
+
+- [`Tag` > `User`](#user--category)
+- [`Tag` = `Activity`](#tag--activity)
+- [`Tag` = `Activity Template`](#tag--activity-template)
+- [`Tag` = `Activity Search`](#tag--activity-search)
+- [`Tag` < `Tag Score`](#tag--tag-score)
+</details>
 
 ### `Tag Score` Attributes
 | Question                                                                                                                | Logical Type  | Example Value             | Physical Column | Physical Type |
@@ -62,12 +79,25 @@ Additionally, each anchor can be assumed to have attributes to answer
 | How much does a [`User`](#user-attributes) like or dislike doing the activity represented by a [`Tag`](#tag-attributes) | `int`         | 2                         |                 |               |
 | Do you want to describe this score in more detail                                                                       | `string`      | I was really tired        |                 |               |
 
+<details>
+<summary><code>Tag Score</code> Links</summary>
+
+- [`Tag Score` > `Tag`](#tag--tag-score)
+- [`Tag Score` > `User`](#user--tag-score)
+</details>
 
 ### `Activity` Attributes
 | Question             | Logical Type  | Example Value             | Physical Column  | Physical Type |
 | ---                  | ---           | ---                       | ---              | ---           |
 | When did it start    | `timestamp`   | 2025-09-27T15:33:17.287Z  |
 | When did it end      | `timestamp`   | 2025-09-29T18:19:46.931Z  |  
+
+<details>
+<summary><code>Activity</code> Links</summary>
+
+- [`Activity` > `User`](#user--activity)
+- [`Activity` = `Tag`](#tag--activity)
+</details>
 
 ### `Activity Template` Attributes
 Data to pre-populate a form to create an [`Activity`](#activity-attributes)
@@ -76,6 +106,14 @@ Data to pre-populate a form to create an [`Activity`](#activity-attributes)
 | ---                                                                    | ---           | ---                       | ---              | ---            |
 | What title does a user see when they're browsing `Activity Templates`  | `string`      | idk                       |                  |                |
 
+<details>
+<summary><code>Activity Template</code> Links</summary>
+
+- [`Activity Template` > `User`](#user--activity-template)
+- [`Activity Template` = `Tag`](#tag--activity-template)
+
+</details
+
 ### `Activity Search` Attributes
 Data to pre-populate a form to create an [`Activity`](#activity-attributes)
 | Question                                                               | Logical Type  | Example Value                                       | Physical Column  | Physical Type  |
@@ -83,6 +121,12 @@ Data to pre-populate a form to create an [`Activity`](#activity-attributes)
 | What title does a user see when they're browsing `Activity Templates`  | `string`      | last 7 days                                         |                  |                |
 | What kind of date/time range will this search be bounded by            | `enum`        | `between t1 and t1 - interval`, `between t1 and t2` |
 
+<details>
+<summary><code>Activity Search</code> Links</summary>
+
+- [`Activity Search` > `User`](#user--activity-search)
+- [`Activity Search` = `Tag`](#tag--activity-search)
+</details
 
 ## Links
 > Attributes cannot contain IDs. Instead, when two anchors are involved, we need to use links
