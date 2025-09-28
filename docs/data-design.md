@@ -5,6 +5,15 @@ _This document is the output of the exercies outlined in https://kb.databasedesi
 ## Anchors
 > Basically the only thing that anchors handle is IDs and counting. All the data is handled by attributes, discussed in the next section.
 
+Additionally, each anchor can be assumed to have attributes to answer
+
+| Question              | Logical Type  | Example Value             | Physical Column | Physical Type |
+| ---                   | ---           | ---                       | ---             | ---           |
+| When was it created   | `timestamp`   | 2025-09-27T15:33:17.287Z  | `created_at`    |               |
+| When was it updated   | `timestamp`   | 2025-09-29T18:19:46.931Z  | `updated_at`    |               |
+| Has it been archived  | `boolean`     | False                     | `is_archived`   | `boolean`     |
+
+
 | Anchor                                                | Physical Table  |
 | ---                                                   | ---             |
 | [`User`](#user-attributes)                            |
@@ -28,16 +37,13 @@ _This document is the output of the exercies outlined in https://kb.databasedesi
 | ---                                                   | ---           | ---                                    | ---             | ---           |
 | What kind of activity does this tag represent         | `string`      | dishes                                 |                 |               |
 | Do you want to describe this activity in more detail  | `string`      | putting the dishes in the dishwasher   |                 |               |
-| When was this tag created                             | `timestamp`   | 2025-09-27T15:33:17.287Z               |                 |               |
-| When was this tag updated                             | `timestamp`   | 2025-09-29T18:19:46.931Z               |                 |               |
+
 
 ### `Tag Score` Attributes
 | Question                                                                                                                | Logical Type  | Example Value             | Physical Column | Physical Type |
 | ---                                                                                                                     | ---           | ---                       | ---             | ---           |
 | How much does a [`User`](#user-attributes) like or dislike doing the activity represented by a [`Tag`](#tag-attributes) | `int`         | 2                         |                 |               |
 | Do you want to describe this score in more detail                                                                       | `string`      | I was really tired        |                 |               |
-| When was the tag score created                                                                                          | `timestamp`   | 2025-09-27T15:33:17.287Z  |                 |               |
-| When was the tag score updated                                                                                          | `timestamp`   | 2025-09-29T18:19:46.931Z  |                 |               |
 
 
 ### `Activity` Attributes
@@ -45,9 +51,6 @@ _This document is the output of the exercies outlined in https://kb.databasedesi
 | ---                  | ---           | ---                       | ---              | ---           |
 | When did it start    | `timestamp`   | 2025-09-27T15:33:17.287Z  |
 | When did it end      | `timestamp`   | 2025-09-29T18:19:46.931Z  |  
-| When was it created  | `timestamp`   | 2025-09-29T18:19:46.931Z  |  
-| When was it updated  | `timestamp`   | 2025-09-29T18:19:46.931Z  |  
-
 
 ### `Activity Template` Attributes
 Data to pre-populate a form to create an [`Activity`](#activity-attributes)
@@ -105,7 +108,7 @@ A [`Tag Score`](#tag-score-attributes) is created by one [`User`](#user-attribut
 
 ### `User` < `Activity` 
 A [`User`](#user-attributes) creates multiple [`Activities`](#activity-attributes).
-A [`Activity`](#activity-attributes) is created by one [`User`](#user-attributes).
+An [`Activity`](#activity-attributes) is created by one [`User`](#user-attributes).
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
@@ -113,21 +116,19 @@ A [`Activity`](#activity-attributes) is created by one [`User`](#user-attributes
 
 ### `User` < `Activity Template` 
 A [`User`](#user-attributes) creates multiple [`Activity Templates`](#activity-template-attributes).
-A [`Activity Template`](#activity-template-attributes) is created by one [`User`](#user-attributes).
+An [`Activity Template`](#activity-template-attributes) is created by one [`User`](#user-attributes).
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
 | 1:n         |                           |
 
 ### `User` < `Activity Search` 
-A [`User`](#user-attributes) creates multiple [`Activity Searchs`](#activity-search-attributes).
+A [`User`](#user-attributes) creates multiple [`Activity Searches`](#activity-search-attributes).
 A [`Activity Search`](#activity-search-attributes) is created by one [`User`](#user-attributes).
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
 | 1:n         |                           |
-
-
 
 ### `Tag` = `Activity`
 A [`Tag`](#tag-attributes) may be linked to multiple [`Activities`](#activity-attributes).
@@ -136,3 +137,27 @@ An [`Activity`](#activity-attributes) may be linked to multiple [`Tags`](#tag-at
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
 | m:n         |                           |
+
+### `Tag` = `Activity Template`
+A [`Tag`](#tag-attributes) may be linked to multiple [`Activity Templates`](#activity-template-attributes).
+An [`Activity Template`](#activity-template-attributes) may be linked to multiple [`Tags`](#tag-attributes).
+
+| Cardnality  | Physical Table or Column  |
+| ---         | ---                       |
+| m:n         |                           |
+
+### `Tag` = `Activity Search`
+A [`Tag`](#tag-attributes) may be linked to multiple [`Activity Searches`](#activity-search-attributes).
+An [`Activity Search`](#activity-search-attributes) may be linked to multiple [`Tags`](#tag-attributes).
+
+| Cardnality  | Physical Table or Column  |
+| ---         | ---                       |
+| m:n         |                           |
+
+### `Tag` < `Tag Score`
+A [`Tag`](#tag-attributes) may be linked to multiple [`Tag Scores`](#tag-score-attributes).
+A [`Tag Score`](#tag-score-attributes) may be linked to one [`Tag`](#tag-attributes).
+
+| Cardnality  | Physical Table or Column  |
+| ---         | ---                       |
+| 1:n         |                           |
