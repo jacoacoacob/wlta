@@ -126,7 +126,7 @@ Data to pre-populate a form to create an [`Activity`](#activity-attributes)
 
 - [`Activity Search` > `User`](#user--activity-search)
 - [`Activity Search` = `Tag`](#tag--activity-search)
-</details
+</details>
 
 ## Links
 > Attributes cannot contain IDs. Instead, when two anchors are involved, we need to use links
