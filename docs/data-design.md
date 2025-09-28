@@ -112,7 +112,7 @@ Data to pre-populate a form to create an [`Activity`](#activity-attributes)
 - [`Activity Template` > `User`](#user--activity-template)
 - [`Activity Template` = `Tag`](#tag--activity-template)
 
-</details
+</details>
 
 ### `Activity Search` Attributes
 Data to pre-populate a form to create an [`Activity`](#activity-attributes)
