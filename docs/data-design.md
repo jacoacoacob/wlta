@@ -1,5 +1,5 @@
 # Data Design
-_This document is the output of the exercies outlined in https://kb.databasedesignbook.com/posts/google-calendar/_
+This document is the output of the exercies outlined in https://kb.databasedesignbook.com/posts/google-calendar/
 
 
 ## Anchors
@@ -14,15 +14,15 @@ Additionally, each anchor can be assumed to have attributes to answer
 | Has it been archived  | `boolean`     | False                     | `is_archived`   | `boolean`     |
 
 
-| Anchor                                                | Physical Table  |
-| ---                                                   | ---             |
-| [`User`](#user-attributes)                            |
-| [`Category`](#category-attributes)                    |
-| [`Tag`](#tag-attributes)                              |
-| [`Tag Score`](#tag-score-attributes)                  |
-| [`Activity`](#activity-attributes)                    |
-| [`Activity Template`](#activity-template-attributes)  |
-| [`Activity Search`](#activity-attributes)             |
+| Anchor                                                | Physical Table        |
+| ---                                                   | ---                   |
+| [`User`](#user-attributes)                            | `user_profile`        |
+| [`Category`](#category-attributes)                    | `categories`          |
+| [`Tag`](#tag-attributes)                              | `tags`                |
+| [`Tag Score`](#tag-score-attributes)                  | `tag_scores`          |
+| [`Activity`](#activity-attributes)                    | `activities`          |
+| [`Activity Template`](#activity-template-attributes)  | `activity_templates`  |
+| [`Activity Search`](#activity-attributes)             | `activity_searches`   |
 
 ## Attributes
 > Attributes store the actual information about anchors.
@@ -30,8 +30,8 @@ Additionally, each anchor can be assumed to have attributes to answer
 ### `User` Attributes
 | Question                            | Logical Type  | Example Value                   | Physical Column | Physical Type |
 | ---                                 | ---           | ---                             | ---             | ---           |
-| What is the user's display name     | `string`      | my_name                         |                 |               |
-| Does the user have a profile photo  | `string`      | assets.myapp.com/user-id/photo  |                 |               |
+| What is the user's display name     | `string`      | my_name                         | `display_name`  | `text`        |
+| Does the user have a profile photo  | `string`      | assets.myapp.com/user-id/photo  | `photo`         | `text`        |                               
 
 <details>
 <summary><code>User</code> Links</summary>
@@ -47,8 +47,8 @@ Additionally, each anchor can be assumed to have attributes to answer
 ### `Category` Attributes
 | Question                                                    | Logical Type  | Example Value                                 | Physical Column | Physical Type |
 | ---                                                         | ---           | ---                                           | ---             | ---           |
-| What general kind of activity does this category represent  | `string`      | cleaning, leisure, money job, admin           |                 |               |
-| Do you want to describe this category in more detail        | `string`      | making appointments, balancing budgets, etc.  |                 |               |
+| What general kind of activity does this category represent  | `string`      | cleaning, leisure, money job, admin           | `name`          | `text`        |
+| Do you want to describe this category in more detail        | `string`      | making appointments, balancing budgets, etc.  | `description`   | `text`        |
 
 <details>
 <summary><code>Category</code> Links</summary>
@@ -60,8 +60,8 @@ Additionally, each anchor can be assumed to have attributes to answer
 ### `Tag` Attributes
 | Question                                                | Logical Type  | Example Value                          | Physical Column | Physical Type |
 | ---                                                     | ---           | ---                                    | ---             | ---           |
-| What specific kind of activity does this tag represent  | `string`      | dishes, clean stove, cooking           |                 |               |
-| Do you want to describe this activity in more detail    | `string`      | putting the dishes in the dishwasher   |                 |               |
+| What specific kind of activity does this tag represent  | `string`      | dishes, clean stove, cooking           | `name`          | `text`        |
+| Do you want to describe this activity in more detail    | `string`      | putting the dishes in the dishwasher   | `description`   | `text`        |
 
 <details>
 <summary><code>Tag</code> Links</summary>
@@ -74,10 +74,10 @@ Additionally, each anchor can be assumed to have attributes to answer
 </details>
 
 ### `Tag Score` Attributes
-| Question                                                                                                                | Logical Type  | Example Value             | Physical Column | Physical Type |
-| ---                                                                                                                     | ---           | ---                       | ---             | ---           |
-| How much does a [`User`](#user-attributes) like or dislike doing the activity represented by a [`Tag`](#tag-attributes) | `int`         | 2                         |                 |               |
-| Do you want to describe this score in more detail                                                                       | `string`      | I was really tired        |                 |               |
+| Question                                                                                                                | Logical Type  | Example Value       | Physical Column | Physical Type |
+| ---                                                                                                                     | ---           | ---                 | ---             | ---           |
+| How much does a [`User`](#user-attributes) like or dislike doing the activity represented by a [`Tag`](#tag-attributes) | `int`         | 2                   | `score`         | `smallint`    |
+| Do you want to describe this score in more detail                                                                       | `string`      | I was really tired  | `description`   | `text`        |
 
 <details>
 <summary><code>Tag Score</code> Links</summary>
@@ -89,8 +89,8 @@ Additionally, each anchor can be assumed to have attributes to answer
 ### `Activity` Attributes
 | Question             | Logical Type  | Example Value             | Physical Column  | Physical Type |
 | ---                  | ---           | ---                       | ---              | ---           |
-| When did it start    | `timestamp`   | 2025-09-27T15:33:17.287Z  |
-| When did it end      | `timestamp`   | 2025-09-29T18:19:46.931Z  |  
+| When did it start    | `timestamp`   | 2025-09-27T15:33:17.287Z  | `started_at`     | `timestamptz` |
+| When did it end      | `timestamp`   | 2025-09-29T18:19:46.931Z  | `ended_at`       | `timestamptz` |
 
 <details>
 <summary><code>Activity</code> Links</summary>
@@ -104,7 +104,7 @@ Data to pre-populate a form to create an [`Activity`](#activity-attributes)
 
 | Question                                                               | Logical Type  | Example Value             | Physical Column  | Physical Type  |
 | ---                                                                    | ---           | ---                       | ---              | ---            |
-| What title does a user see when they're browsing `Activity Templates`  | `string`      | idk                       |                  |                |
+| What title does a user see when they're browsing `Activity Templates`  | `string`      | idk                       | `name`           | `text`         |
 
 <details>
 <summary><code>Activity Template</code> Links</summary>
@@ -116,10 +116,10 @@ Data to pre-populate a form to create an [`Activity`](#activity-attributes)
 
 ### `Activity Search` Attributes
 Data to pre-populate a form to create an [`Activity`](#activity-attributes)
-| Question                                                               | Logical Type  | Example Value                                       | Physical Column  | Physical Type  |
-| ---                                                                    | ---           | ---                                                 | ---              | ---            |
-| What title does a user see when they're browsing `Activity Templates`  | `string`      | last 7 days                                         |                  |                |
-| What kind of date/time range will this search be bounded by            | `enum`        | `between t1 and t1 - interval`, `between t1 and t2` |
+| Question                                                               | Logical Type  | Example Value                                                | Physical Column  | Physical Type  |
+| ---                                                                    | ---           | ---                                                          | ---              | ---            |
+| What title does a user see when they're browsing `Activity Searches `  | `string`      | last 7 days                                                  | `name`           | `text`         |
+| What kind of date/time range will this search be bounded by            | `collection`  | { "type": "interval", "start": "now", end: "now - 7 days" }  | `params`         | `json`         |
 
 <details>
 <summary><code>Activity Search</code> Links</summary>
@@ -157,7 +157,7 @@ A [`Category`](#category-attributes) is created by one [`User`](#user-attributes
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
-| 1:n         |                           |
+| 1:n         | `categories.owner_id`     |
 
 ### `User` < `Tag` 
 A [`User`](#user-attributes) creates multiple [`Tags`](#tag-attributes).
@@ -165,7 +165,7 @@ A [`Tag`](#tag-attributes) is created by one [`User`](#user-attributes).
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
-| 1:n         |                           |
+| 1:n         | `tags.owner_id`           |
 
 ### `User` < `Tag Score` 
 A [`User`](#user-attributes) creates multiple [`Tag Scores`](#tag-score-attributes).
@@ -173,7 +173,7 @@ A [`Tag Score`](#tag-score-attributes) is created by one [`User`](#user-attribut
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
-| 1:n         |                           |
+| 1:n         | `tag_scores.owner_id`     |
 
 ### `User` < `Activity` 
 A [`User`](#user-attributes) creates multiple [`Activities`](#activity-attributes).
@@ -181,23 +181,23 @@ An [`Activity`](#activity-attributes) is created by one [`User`](#user-attribute
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
-| 1:n         |                           |
+| 1:n         | `activities.owner_id`     |
 
 ### `User` < `Activity Template` 
 A [`User`](#user-attributes) creates multiple [`Activity Templates`](#activity-template-attributes).
 An [`Activity Template`](#activity-template-attributes) is created by one [`User`](#user-attributes).
 
-| Cardnality  | Physical Table or Column  |
-| ---         | ---                       |
-| 1:n         |                           |
+| Cardnality  | Physical Table or Column      |
+| ---         | ---                           |
+| 1:n         | `activity_templates.owner_id` |
 
 ### `User` < `Activity Search` 
 A [`User`](#user-attributes) creates multiple [`Activity Searches`](#activity-search-attributes).
 An [`Activity Search`](#activity-search-attributes) is created by one [`User`](#user-attributes).
 
-| Cardnality  | Physical Table or Column  |
-| ---         | ---                       |
-| 1:n         |                           |
+| Cardnality  | Physical Table or Column      |
+| ---         | ---                           |
+| 1:n         | `activity_searches.owner_id`  |
 
 ### `Category` = `Tag`
 A [`Category`](#category-attributes) may be linked to multiple [`Tags`](#tag-attributes).
@@ -205,7 +205,7 @@ A [`Tag`](#tag-attributes) may be linked to multiple [`Categories`](#category-at
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
-| m:n         |                           |
+| m:n         | `categories_tags`         |
 
 ### `Tag` = `Activity`
 A [`Tag`](#tag-attributes) may be linked to multiple [`Activities`](#activity-attributes).
@@ -213,7 +213,7 @@ An [`Activity`](#activity-attributes) may be linked to multiple [`Tags`](#tag-at
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
-| m:n         |                           |
+| m:n         | `tags_activities`         |
 
 ### `Tag` = `Activity Template`
 A [`Tag`](#tag-attributes) may be linked to multiple [`Activity Templates`](#activity-template-attributes).
@@ -221,7 +221,7 @@ An [`Activity Template`](#activity-template-attributes) may be linked to multipl
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
-| m:n         |                           |
+| m:n         | `tags_activity_templates` |
 
 ### `Tag` = `Activity Search`
 A [`Tag`](#tag-attributes) may be linked to multiple [`Activity Searches`](#activity-search-attributes).
@@ -229,7 +229,7 @@ An [`Activity Search`](#activity-search-attributes) may be linked to multiple [`
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
-| m:n         |                           |
+| m:n         | `tags_activity_searches`  |
 
 ### `Tag` < `Tag Score`
 A [`Tag`](#tag-attributes) may be linked to multiple [`Tag Scores`](#tag-score-attributes).
@@ -237,4 +237,4 @@ A [`Tag Score`](#tag-score-attributes) may be linked to one [`Tag`](#tag-attribu
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
-| 1:n         |                           |
+| 1:n         | `tag_scores.tag_id`       |
