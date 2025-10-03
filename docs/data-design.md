@@ -9,8 +9,8 @@ Additionally, each anchor can be assumed to have attributes to answer
 
 | Question              | Logical Type  | Example Value             | Physical Column | Physical Type |
 | ---                   | ---           | ---                       | ---             | ---           |
-| When was it created   | `timestamp`   | 2025-09-27T15:33:17.287Z  | `created_at`    |               |
-| When was it updated   | `timestamp`   | 2025-09-29T18:19:46.931Z  | `updated_at`    |               |
+| When was it created   | `timestamp`   | 2025-09-27T15:33:17.287Z  | `created_at`    | `timestamptz` |
+| When was it updated   | `timestamp`   | 2025-09-29T18:19:46.931Z  | `updated_at`    | `timestamptz` |
 | Has it been archived  | `boolean`     | False                     | `is_archived`   | `boolean`     |
 
 
