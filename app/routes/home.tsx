@@ -1,13 +1,40 @@
+import { deriveIsLoggedIn, isNull } from "~/utils";
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+import { sessionContext, supabaseContext } from "~/context";
+import { Link } from "react-router";
+import { GlobalHeader } from "~/features/GlobalHeader";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Work and Leisure Time Tracker" },
+    { name: "description", content: "Track how you spend your time!" },
   ];
 }
 
-export default function Home() {
-  return <Welcome />;
+export async function loader({ context }: Route.ClientLoaderArgs) {
+  return {
+    isLoggedIn: deriveIsLoggedIn(context)
+  };
+}
+
+export default function Home({ loaderData }: Route.ComponentProps) {
+  const { isLoggedIn } = loaderData;
+
+  return (
+    <div className="min-h-dvh w-dvw flex flex-col">
+      <GlobalHeader isLoggedIn={isLoggedIn} />
+      <div className="flex-1 flex flex-col gap-2 justify-center items-center">
+        <h1>Welcome to the Work and Leisure Time Tracker!</h1>
+        {isLoggedIn ? (
+          <div>
+            Go to your <Link className="underline" to="/dashboard">Dashboard</Link>.
+          </div>
+        ) : (
+          <div>
+            <Link className="underline" to="/login">Sign in</Link> to get started.
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

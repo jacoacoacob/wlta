@@ -6,9 +6,20 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-
 import type { Route } from "./+types/root";
 import "./app.css";
+import { supabaseClientMiddleware, supbaseServerMiddleware } from "./middleware/supabase.middleware";
+import { sessionClientMiddleware, sessionServerMiddleware } from "./middleware/session.middleware";
+
+export const middleware: Route.MiddlewareFunction[] = [
+  supbaseServerMiddleware,
+  sessionServerMiddleware,
+];
+
+export const clientMiddleware: Route.ClientMiddlewareFunction[] = [
+  supabaseClientMiddleware,
+  sessionClientMiddleware,
+];
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },

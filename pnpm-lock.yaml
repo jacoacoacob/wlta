@@ -14,6 +14,9 @@ importers:
       '@react-router/serve':
         specifier: ^7.7.1
         version: 7.9.1(react-router@7.9.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(typescript@5.9.2)
+      '@supabase/ssr':
+        specifier: ^0.7.0
+        version: 0.7.0(@supabase/supabase-js@2.58.0)
       '@supabase/supabase-js':
         specifier: ^2.58.0
         version: 2.58.0
@@ -46,8 +49,8 @@ importers:
         specifier: ^19.1.2
         version: 19.1.9(@types/react@19.1.13)
       supabase:
-        specifier: ^2.48.3
-        version: 2.48.3
+        specifier: ^2.51.0
+        version: 2.51.0
       tailwindcss:
         specifier: ^4.1.4
         version: 4.1.13
@@ -565,6 +568,11 @@ packages:
 
   '@supabase/realtime-js@2.15.5':
     resolution: {integrity: sha512-/Rs5Vqu9jejRD8ZeuaWXebdkH+J7V6VySbCZ/zQM93Ta5y3mAmocjioa/nzlB6qvFmyylUgKVS1KpE212t30OA==}
+
+  '@supabase/ssr@0.7.0':
+    resolution: {integrity: sha512-G65t5EhLSJ5c8hTCcXifSL9Q/ZRXvqgXeNo+d3P56f4U1IxwTqjB64UfmfixvmMcjuxnq2yGqEWVJqUcO+AzAg==}
+    peerDependencies:
+      '@supabase/supabase-js': ^2.43.4
 
   '@supabase/storage-js@2.12.2':
     resolution: {integrity: sha512-SiySHxi3q7gia7NBYpsYRu8gyI0NhFwSORMxbZIxJ/zAVkN6QpwDRan158CJ+UdzD4WB/rQMAGRqIJQP+7ccAQ==}
@@ -1509,8 +1517,8 @@ packages:
     resolution: {integrity: sha512-gmBGslpoQJtgnMAvOVqGZpEz9dyoKTCzy2nfz/n8aIFhN/jCE/rCmcxabB6jOOHV+0WNnylOxaxBQPSvcWklhA==}
     engines: {node: '>=12'}
 
-  supabase@2.48.3:
-    resolution: {integrity: sha512-92vjrWqRUQPX9eYgTYlSSVXfpjzsAa++IX7IEM99BoYvNS3Pl6VrsqGN06QWi4VaX7FlPjjHLp+aIjoeWXcBug==}
+  supabase@2.51.0:
+    resolution: {integrity: sha512-/veWvAlztU+T+l012O1R3g6poEhP/nqAGbdU5ws0nICTD8cY9bMgn68YJFVDKcQJVhO7NCJ1LbX/IgyYKNNvBw==}
     engines: {npm: '>=8'}
     hasBin: true
 
@@ -2201,6 +2209,11 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+
+  '@supabase/ssr@0.7.0(@supabase/supabase-js@2.58.0)':
+    dependencies:
+      '@supabase/supabase-js': 2.58.0
+      cookie: 1.0.2
 
   '@supabase/storage-js@2.12.2':
     dependencies:
@@ -3116,7 +3129,7 @@ snapshots:
     dependencies:
       ansi-regex: 6.2.2
 
-  supabase@2.48.3:
+  supabase@2.51.0:
     dependencies:
       bin-links: 5.0.0
       https-proxy-agent: 7.0.6
