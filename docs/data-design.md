@@ -36,6 +36,7 @@ Additionally, each anchor can be assumed to have attributes to answer
 <details>
 <summary><code>User</code> Links</summary>
 
+- [`User` = `User`](#user--user)
 - [`User` < `Category`](#user--category)
 - [`User` < `Tag`](#user--tag)
 - [`User` < `Tag Score`](#user--tag-score)
@@ -151,6 +152,12 @@ _a note on cardnality notation with help from https://stackoverflow.com/a/339738
 `1:n` (or `<`) represents one-to-many relationships.
 
 `1:1` (or `–`) represents one-to-one relationships
+
+### `User` = `User`
+A [`User`](#user-attributes) can share their acrtivity with multiple [`Users`](#user-attributes).
+| Cardnality  | Physical Table or Column  |
+| ---         | ---                       |
+| m:n         | `user_link`               |
 
 ### `User` < `Category` 
 A [`User`](#user-attributes) creates multiple [`Categories`](#category-attributes).
