@@ -47,7 +47,7 @@ Additionally, each anchor can be assumed to have attributes to answer
 ### `Category` Attributes
 | Question                                                    | Logical Type  | Example Value                                 | Physical Column | Physical Type |
 | ---                                                         | ---           | ---                                           | ---             | ---           |
-| What general kind of activity does this category represent  | `string`      | cleaning, leisure, money job, admin           | `name`          | `text`        |
+| What general kind of activity does this category represent  | `string`      | admin                                         | `name`          | `text`        |
 | Do you want to describe this category in more detail        | `string`      | making appointments, balancing budgets, etc.  | `description`   | `text`        |
 
 <details>
@@ -71,6 +71,7 @@ Additionally, each anchor can be assumed to have attributes to answer
 - [`Tag` = `Activity Template`](#tag--activity-template)
 - [`Tag` = `Activity Search`](#tag--activity-search)
 - [`Tag` < `Tag Score`](#tag--tag-score)
+- [`Tag` = `Category`](#category--tag)
 </details>
 
 ### `Tag Score` Attributes
