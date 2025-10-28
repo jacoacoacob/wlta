@@ -30,7 +30,8 @@ Additionally, each anchor can be assumed to have attributes to answer
 ### `User` Attributes
 | Question                            | Logical Type  | Example Value                   | Physical Column | Physical Type |
 | ---                                 | ---           | ---                             | ---             | ---           |
-| What is the user's display name     | `string`      | my_name                         | `display_name`  | `text`        |
+| What is the user's display name     | `string`      | Bob Smith                       | `display_name`  | `text`        |
+| What is the user's unique handle    | `string`      | bob_smith                         | `display_name`  | `text`        |
 | Does the user have a profile photo  | `string`      | assets.myapp.com/user-id/photo  | `photo`         | `text`        |                               
 
 <details>
@@ -117,7 +118,7 @@ Data to pre-populate a form to create an [`Activity`](#activity-attributes)
 </details>
 
 ### `Activity Search` Attributes
-Data to pre-populate a form to create an [`Activity`](#activity-attributes)
+Data to pre-populate a form to create an [`Activity Search`](#activity-search-attributes)
 | Question                                                               | Logical Type  | Example Value                                                | Physical Column  | Physical Type  |
 | ---                                                                    | ---           | ---                                                          | ---              | ---            |
 | What title does a user see when they're browsing `Activity Searches `  | `string`      | last 7 days                                                  | `name`           | `text`         |
@@ -157,7 +158,7 @@ _a note on cardnality notation with help from https://stackoverflow.com/a/339738
 A [`User`](#user-attributes) can share their acrtivity with multiple [`Users`](#user-attributes).
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
-| m:n         | `user_link`               |
+| m:n         | `linked_user_profiles`    |
 
 ### `User` < `Category` 
 A [`User`](#user-attributes) creates multiple [`Categories`](#category-attributes).
@@ -165,7 +166,7 @@ A [`Category`](#category-attributes) is created by one [`User`](#user-attributes
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
-| 1:n         | `categories.owner_id`     |
+| 1:n         | `categories.user_id`     |
 
 ### `User` < `Tag` 
 A [`User`](#user-attributes) creates multiple [`Tags`](#tag-attributes).
@@ -173,7 +174,7 @@ A [`Tag`](#tag-attributes) is created by one [`User`](#user-attributes).
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
-| 1:n         | `tags.owner_id`           |
+| 1:n         | `tags.user_id`           |
 
 ### `User` < `Tag Score` 
 A [`User`](#user-attributes) creates multiple [`Tag Scores`](#tag-score-attributes).
@@ -181,7 +182,7 @@ A [`Tag Score`](#tag-score-attributes) is created by one [`User`](#user-attribut
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
-| 1:n         | `tag_scores.owner_id`     |
+| 1:n         | `tag_scores.user_id`     |
 
 ### `User` < `Activity` 
 A [`User`](#user-attributes) creates multiple [`Activities`](#activity-attributes).
@@ -189,7 +190,7 @@ An [`Activity`](#activity-attributes) is created by one [`User`](#user-attribute
 
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
-| 1:n         | `activities.owner_id`     |
+| 1:n         | `activities.user_id`     |
 
 ### `User` < `Activity Template` 
 A [`User`](#user-attributes) creates multiple [`Activity Templates`](#activity-template-attributes).
@@ -197,7 +198,7 @@ An [`Activity Template`](#activity-template-attributes) is created by one [`User
 
 | Cardnality  | Physical Table or Column      |
 | ---         | ---                           |
-| 1:n         | `activity_templates.owner_id` |
+| 1:n         | `activity_templates.user_id` |
 
 ### `User` < `Activity Search` 
 A [`User`](#user-attributes) creates multiple [`Activity Searches`](#activity-search-attributes).
@@ -205,7 +206,7 @@ An [`Activity Search`](#activity-search-attributes) is created by one [`User`](#
 
 | Cardnality  | Physical Table or Column      |
 | ---         | ---                           |
-| 1:n         | `activity_searches.owner_id`  |
+| 1:n         | `activity_searches.user_id`  |
 
 ### `Category` = `Tag`
 A [`Category`](#category-attributes) may be linked to multiple [`Tags`](#tag-attributes).
