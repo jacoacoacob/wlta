@@ -1,6 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS api;
 
-CREATE TABLE api.user_profiles (
+CREATE TABLE api.profiles (
     id uuid DEFAULT gen_random_uuid(),
     user_id uuid DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     handle varchar(16) UNIQUE CONSTRAINT valid_profile_handle CHECK(
@@ -10,7 +10,7 @@ CREATE TABLE api.user_profiles (
     photo text
 );
 
-ALTER TABLE api.user_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE api.profiles ENABLE ROW LEVEL SECURITY;
 
 CREATE TABLE api.categories (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -85,8 +85,8 @@ CREATE TABLE api.activity_searches (
 
 ALTER TABLE api.activity_searches ENABLE ROW LEVEL SECURITY;
 
--- m:n user_profiles = user_profiles
-CREATE TABLE api.linked_user_profiles (
+-- m:n profiles = profiles
+CREATE TABLE api.linked_profiles (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     own_user_id uuid DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     linked_user_id uuid FOREIGN KEY REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE
@@ -135,12 +135,14 @@ CREATE OR REPLACE FUNCTION get_linked_profiles_user_ids(own_user_id uuid)
 RETURNS SETOF uuid
 AS $$
     SELECT linked_user_id
-      FROM api.linked_user_profiles lup
+      FROM api.linked_profiles lup
      WHERE lup.own_user_id = $1
 $$ STABLE LANGUAGE SQL SECURITY DEFINER;
 
+
 CREATE POLICY "Users can see their own and linked users' user profiles"
-ON api.user_profiles
+ON api.profiles
+FOR SELECT
 TO authenticated
 USING (
     (SELECT auth.uid()) = user_id OR
@@ -148,3 +150,35 @@ USING (
         SELECT private.get_linked_profiles_user_ids((SELECT auth.uid()))
     )
 );
+
+-- Profiles should be created by a trigger when a user signs up
+CREATE POLICY "Users cannot create new profiles"
+ON api.profiles
+FOR INSERT
+TO authenticated
+USING (false);
+
+CREATE POLICY "Users can update their own profile"
+ON api.profiles
+FOR UPDATE
+TO authenticated
+USING ((SELECT auth.uid()) = user_id) -- check the *existing* row
+WITH CHECK ((SELECT auth.uid()) = user_id) -- check the *new* row
+
+-- Profiles should not be deletable by clients connected with the
+-- 'authenticated' role (logged in web app users). They should be
+-- deletable by clients connected with the 'service_role' role
+-- https://supabase.com/docs/guides/database/postgres/roles#servicerole
+CREATE POLICY "Users cannot delete their own profile"
+ON api.profiles
+TO authenticated
+USING (false);
+
+
+CREATE POLICY "Users can see their own categories and those from linked profiles"
+ON api.categories
+TO authenticated
+USING (
+    -- Both archived and non-archived categories that they own
+    -- Only non-archived categories from linked profiles
+)
