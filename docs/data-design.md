@@ -16,7 +16,7 @@ Additionally, each anchor can be assumed to have attributes to answer
 
 | Anchor                                                | Physical Table        |
 | ---                                                   | ---                   |
-| [`User`](#user-attributes)                            | `user_profile`        |
+| [`User`](#user-attributes)                            | `profile`             |
 | [`Category`](#category-attributes)                    | `categories`          |
 | [`Tag`](#tag-attributes)                              | `tags`                |
 | [`Tag Score`](#tag-score-attributes)                  | `tag_scores`          |
@@ -158,7 +158,7 @@ _a note on cardnality notation with help from https://stackoverflow.com/a/339738
 A [`User`](#user-attributes) can share their acrtivity with multiple [`Users`](#user-attributes).
 | Cardnality  | Physical Table or Column  |
 | ---         | ---                       |
-| m:n         | `linked_user_profiles`    |
+| m:n         | `linked_profiles`    |
 
 ### `User` < `Category` 
 A [`User`](#user-attributes) creates multiple [`Categories`](#category-attributes).
