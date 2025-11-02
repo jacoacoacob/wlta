@@ -79,7 +79,7 @@ CREATE TABLE api.activity_searches (
     updated_at timestamptz NOT NULL DEFAULT (now() AT TIME ZONE 'utc'::text),
     is_archived boolean NOT NULL DEFAULT false,
     user_id uuid REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    name text NOT NULL
+    name text NOT NULL,
     params json
 );
 
@@ -87,56 +87,57 @@ ALTER TABLE api.activity_searches ENABLE ROW LEVEL SECURITY;
 
 -- m:n profiles = profiles
 CREATE TABLE api.linked_profiles (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    own_user_id uuid DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    linked_user_id uuid FOREIGN KEY REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE
+    user_id uuid DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    linked_user_id uuid REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    PRIMARY KEY (user_id, linked_user_id)
 );
 
 -- m:n categories = tags
 CREATE TABLE api.categories_tags (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    category_id REFERENCES api.categories(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    tag_id REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE
+    category_id uuid REFERENCES api.categories(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    tag_id uuid REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    PRIMARY KEY (category_id, tag_id)
 );
 
 ALTER TABLE api.categories_tags ENABLE ROW LEVEL SECURITY;
 
 -- m:n tags = activities
 CREATE TABLE api.tags_activities (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    activity_id REFERENCES api.activities(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    tag_id REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE  
+    activity_id uuid REFERENCES api.activities(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    tag_id uuid REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    PRIMARY KEY (activity_id, tag_id)
 );
 
 ALTER TABLE api.tags_activities ENABLE ROW LEVEL SECURITY;
 
 -- m:n tags = activity_templates
 CREATE TABLE api.tags_activity_templates (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    activity_template_id REFERENCES api.activity_templates(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    tag_id REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE
+    activity_template_id uuid REFERENCES api.activity_templates(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    tag_id uuid REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    PRIMARY KEY (activity_template_id, tag_id)
 );
 
 ALTER TABLE api.tags_activity_templates ENABLE ROW LEVEL SECURITY;
 
 -- m:n tags = activity_searches
 CREATE TABLE api.tags_activity_searches (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    activity_search_id REFERENCES api.activity_searches(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    tag_id REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE
+    activity_search_id uuid REFERENCES api.activity_searches(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    tag_id uuid REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    PRIMARY KEY (activity_search_id, tag_id)
 );
 
 ALTER TABLE api.tags_activity_searches ENABLE ROW LEVEL SECURITY;
 
 
-CREATE SCHEMA IF NOT EXISITS private;
+CREATE SCHEMA IF NOT EXISTS util;
 
-CREATE OR REPLACE FUNCTION get_linked_profiles_user_ids(own_user_id uuid)
+CREATE OR REPLACE FUNCTION util.get_linked_user_ids()
 RETURNS SETOF uuid
+SET search_path = ''
 AS $$
     SELECT linked_user_id
       FROM api.linked_profiles lup
-     WHERE lup.own_user_id = $1
+     WHERE lup.user_id = (SELECT auth.uid())
 $$ STABLE LANGUAGE SQL SECURITY DEFINER;
 
 
@@ -147,7 +148,7 @@ TO authenticated
 USING (
     (SELECT auth.uid()) = user_id OR
     user_id IN (
-        SELECT private.get_linked_profiles_user_ids((SELECT auth.uid()))
+        SELECT util.get_linked_user_ids()
     )
 );
 
@@ -156,14 +157,14 @@ CREATE POLICY "Users cannot create new profiles"
 ON api.profiles
 FOR INSERT
 TO authenticated
-USING (false);
+WITH CHECK (false);
 
 CREATE POLICY "Users can update their own profile"
 ON api.profiles
 FOR UPDATE
 TO authenticated
 USING ((SELECT auth.uid()) = user_id) -- check the *existing* row
-WITH CHECK ((SELECT auth.uid()) = user_id) -- check the *new* row
+WITH CHECK ((SELECT auth.uid()) = user_id); -- check the *new* row
 
 -- Profiles should not be deletable by clients connected with the
 -- 'authenticated' role (logged in web app users). They should be
@@ -171,14 +172,40 @@ WITH CHECK ((SELECT auth.uid()) = user_id) -- check the *new* row
 -- https://supabase.com/docs/guides/database/postgres/roles#servicerole
 CREATE POLICY "Users cannot delete their own profile"
 ON api.profiles
+FOR DELETE
 TO authenticated
 USING (false);
 
 
-CREATE POLICY "Users can see their own categories and those from linked profiles"
+CREATE POLICY "Users can see their own and shared categories"
 ON api.categories
+FOR SELECT
 TO authenticated
 USING (
     -- Both archived and non-archived categories that they own
     -- Only non-archived categories from linked profiles
-)
+    -- TODO: Evaluate performance on this
+    (SELECT auth.uid()) = user_id OR (
+        user_id IN (SELECT util.get_linked_user_ids()) AND
+        is_archived = false
+    )
+);
+
+CREATE POLICY "Users can create new categories"
+ON api.categories
+FOR INSERT
+TO authenticated
+WITH CHECK ((SELECT auth.uid()) = user_id);
+
+CREATE POLICY "Users can update their own categories"
+ON api.categories
+FOR UPDATE
+TO authenticated
+USING ((SELECT auth.uid()) = user_id)
+WITH CHECK ((SELECT auth.uid()) = user_id);
+
+CREATE POLICY "Users can delete their own categories"
+ON api.categories
+FOR DELETE
+TO authenticated
+USING ((SELECT auth.uid()) = user_id);
