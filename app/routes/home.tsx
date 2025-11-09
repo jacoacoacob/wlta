@@ -3,6 +3,7 @@ import type { Route } from "./+types/home";
 import { sessionContext, supabaseContext } from "~/context";
 import { Link } from "react-router";
 import { GlobalHeader } from "~/features/GlobalHeader";
+import { ProfileMenu } from "~/features/ProfileMenu";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -22,7 +23,13 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="min-h-dvh w-dvw flex flex-col">
-      <GlobalHeader isLoggedIn={isLoggedIn} />
+      <GlobalHeader
+        rightNavContent={
+          <div>
+            <ProfileMenu isLoggedIn={isLoggedIn} />
+          </div>
+        }
+      />
       <div className="flex-1 flex flex-col gap-2 justify-center items-center">
         <h1>Welcome to the Work and Leisure Time Tracker!</h1>
         {isLoggedIn ? (

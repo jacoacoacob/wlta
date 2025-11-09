@@ -7,11 +7,26 @@ export default [
     "routes/dashboard.tsx",
     [
       index(
-        "routes/dashboard.home.tsx"
+        "routes/dashboard.index.tsx"
       ),
       route(
-        "search",
-        "routes/dashboard.search.tsx"
+        "categories",
+        "routes/dashboard-categories.tsx",
+        [
+          index("routes/dashboard-categories.index.tsx"),
+          route(
+            "create",
+            "routes/dashboard-categories-create.tsx",
+          ),
+          route(
+            ":categoryId",
+            "routes/dashboard-categories-detail.tsx",
+          ),
+          route(
+            ":categoryId/edit",
+            "routes/dashboard-categories-edit.tsx",
+          ),
+        ]
       )
     ]
   ),

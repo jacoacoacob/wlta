@@ -20,7 +20,7 @@ CREATE TABLE api.categories (
     user_id uuid DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     name text NOT NULL,
     -- hex code #ffaacc
-    color varchar(9),
+    color varchar(16),
     description text
 );
 
