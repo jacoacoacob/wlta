@@ -7,9 +7,16 @@ export const DashboardBreadcrumbs: React.FC = () => {
   const breadcrumbs = matches.reduce<ReturnType<Breadcrumb>[]>(
     (accum, match) => {
       if (isBreadcrumbHandle(match.handle)) {
+
+        if (Array.isArray(match.handle.breadcrumb)) {
+          return accum.concat(
+            match.handle.breadcrumb.map((breadcrumb) => breadcrumb(match))
+          );
+        }
+
         return accum.concat(
           match.handle.breadcrumb(match)
-        )
+        );
       }
 
       return accum;

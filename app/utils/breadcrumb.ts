@@ -8,7 +8,7 @@ export interface BreadcrumbData {
 export type Breadcrumb = (match: UIMatch) => BreadcrumbData;
 
 export interface BreadcrumbHandle {
-  breadcrumb: Breadcrumb;
+  breadcrumb: Breadcrumb | Breadcrumb[];
 }
 
 export function isBreadcrumbHandle(data: unknown): data is BreadcrumbHandle {

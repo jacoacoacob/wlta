@@ -5,14 +5,18 @@ import { getCategoryById, getCategoryList } from "~/models/categories";
 import type { BreadcrumbHandle } from "~/utils/breadcrumb";
 
 export const handle: BreadcrumbHandle = {
-  breadcrumb: ({ pathname, loaderData }) => {
-    const { name } = loaderData as Route.ComponentProps["loaderData"];
-    
-    return {
-      name: `Edit Category: ${name}`,
-      to: pathname
-    }
-  }
+  breadcrumb: [
+    ({ params, loaderData }) => {
+      const { name } = loaderData as Route.ComponentProps["loaderData"];
+      const { categoryId } = params as Route.ComponentProps["params"];
+
+      return {
+        name,
+        to: `/dashboard/categories/${categoryId}`,
+      };
+    },
+    ({ pathname }) => ({ name: "Edit", to: pathname }),
+  ]
 }
 
 export function loader({ params }: Route.LoaderArgs) {
