@@ -6,7 +6,7 @@ export function isNumber(data: unknown): data is number {
   return typeof data === "string" && !Number.isNaN(data);
 }
 
-export function isNonEmptyString(data: unknown) {
+export function isNonEmptyString(data: unknown): data is string {
   return isString(data) && data.trim().length > 0;
 }
 

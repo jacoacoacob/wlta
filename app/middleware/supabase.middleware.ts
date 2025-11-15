@@ -1,6 +1,7 @@
 import type { Route } from "../+types/root";
 import { createServerClient, createBrowserClient, parseCookieHeader, serializeCookieHeader } from "@supabase/ssr";
 import { supabaseContext } from "../context";
+import type { Database } from "~/database.types";
 
 export const supbaseServerMiddleware: Route.MiddlewareFunction = async (
   { request, context },
@@ -8,7 +9,7 @@ export const supbaseServerMiddleware: Route.MiddlewareFunction = async (
 ) => {
   let supabaseSetCookies: string[] = [];
 
-  const supabase = createServerClient(
+  const supabase = createServerClient<Database>(
     process.env.VITE_SUPABASE_URL!,
     process.env.VITE_SUPABASE_PUBLISHABLE_KEY!,
     {
@@ -35,6 +36,9 @@ export const supbaseServerMiddleware: Route.MiddlewareFunction = async (
             options
           ));
         }
+      },
+      db: {
+        schema: "api",
       }
     }
   );
@@ -49,17 +53,18 @@ export const supbaseServerMiddleware: Route.MiddlewareFunction = async (
 }
 
 export const supabaseClientMiddleware: Route.ClientMiddlewareFunction = ({ context }) => {
-  const supabase = createBrowserClient(
+  const supabase = createBrowserClient<Database>(
     import.meta.env.VITE_SUPABASE_URL!,
     import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY!,
     {
       auth: {
         flowType: "pkce",
-      }
+      },
+      db: {
+        schema: "api",
+      },
     }
   );
-
-  console.log(supabase.auth)
 
   context.set(supabaseContext, supabase);
 }

@@ -1,11 +1,21 @@
-import { getCategoryList } from "~/models/categories"
 import type { Route } from "./+types/dashboard-categories.index";
-import { NavLink } from "react-router";
+import { data, NavLink } from "react-router";
+import { supabaseContext } from "~/context";
 
-export function loader() {
-  return {
-    categories: getCategoryList(),
+export async function loader({ context }: Route.LoaderArgs) {
+  const db = context.get(supabaseContext);
+
+  const { data: categories, error } = await db.schema('api').from("categories").select("*");
+
+  if (error) {
+    console.warn(error);
   }
+
+  if (!categories) {
+    throw data(error, { status: 404 });
+  }
+
+  return { categories };
 }
 
 export default function DashboardCategories({ loaderData }: Route.ComponentProps) {

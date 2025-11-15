@@ -1,25 +1,43 @@
-import { getCategoryById } from "~/models/categories";
+import { getCategoryById } from "~/models/categories_";
 import type { Route } from "./+types/dashboard-categories-detail";
 import { data, NavLink } from "react-router";
 import type { BreadcrumbHandle } from "~/utils/breadcrumb";
+import { assertIsLoggedIn } from "~/utils";
+import { supabaseContext } from "~/context";
 
-export function loader({ params }: Route.LoaderArgs) {
-  const category = getCategoryById(params.categoryId);
+export async function loader({ context, params }: Route.LoaderArgs) {
+  const user = assertIsLoggedIn(context)
+  
+  const db = context.get(supabaseContext);
 
-  if (!category) {
-    throw data(
-      { message: `We couldn't find a category with id ${params.categoryId}` },
-      { status: 404 }
-    );
+  const { data: category, error } = await db
+    .schema('api')
+    .from("categories")
+    .select(`
+      *,
+      tags (*)
+    `)
+    .eq("user_id", user.id)
+    .eq("id", params.categoryId)
+    .eq("is_archived", false)
+    .single();
+
+  if (error) {
+    console.warn(error);
   }
 
-  return category;
+  if (!category) {
+    throw data(error, { status: 404 });
+  }
+
+  return { category };
 }
 
 export const handle: BreadcrumbHandle = {
   breadcrumb: ({ loaderData }) => {
-    const { name, id } = loaderData as Route.ComponentProps["loaderData"];
+    const { category } = loaderData as Route.ComponentProps["loaderData"];
 
+    const { name, id } = category;
     return {
       name,
       to: `/dashboard/categories/${id}` 
@@ -28,7 +46,9 @@ export const handle: BreadcrumbHandle = {
 }
 
 export default function DashboardCategoriesDetail({ loaderData }: Route.ComponentProps) {
-  const { name, id, description } = loaderData;
+  const { category } = loaderData;
+
+  const { name, description } = category;
 
   return (
     <div className="flex flex-col gap-4">
@@ -42,6 +62,7 @@ export default function DashboardCategoriesDetail({ loaderData }: Route.Componen
           Edit
         </NavLink>
       </div>
+      <pre>{JSON.stringify(category, null, 2)}</pre>
     </div>
   ) 
 }

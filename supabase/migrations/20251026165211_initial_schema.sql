@@ -1,8 +1,16 @@
 CREATE SCHEMA IF NOT EXISTS api;
 
+GRANT USAGE ON SCHEMA api TO anon, authenticated, service_role;
+GRANT ALL ON ALL TABLES IN SCHEMA api TO anon, authenticated, service_role;
+GRANT ALL ON ALL ROUTINES IN SCHEMA api TO anon, authenticated, service_role;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA api TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA api GRANT ALL ON TABLES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA api GRANT ALL ON ROUTINES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA api GRANT ALL ON SEQUENCES TO anon, authenticated, service_role;
+
 CREATE TABLE api.profiles (
     id uuid DEFAULT gen_random_uuid(),
-    user_id uuid DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    user_id uuid NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     handle varchar(16) UNIQUE CONSTRAINT valid_profile_handle CHECK(
         handle ~ '^[a-z0-9_]+$'
     ),
@@ -17,7 +25,7 @@ CREATE TABLE api.categories (
     created_at timestamptz NOT NULL DEFAULT (now() AT TIME ZONE 'utc'::text),
     updated_at timestamptz NOT NULL DEFAULT (now() AT TIME ZONE 'utc'::text),
     is_archived boolean NOT NULL DEFAULT false,
-    user_id uuid DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    user_id uuid NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     name text NOT NULL,
     -- hex code #ffaacc
     color varchar(16),
@@ -31,7 +39,7 @@ CREATE TABLE api.tags (
     created_at timestamptz NOT NULL DEFAULT (now() AT TIME ZONE 'utc'::text),
     updated_at timestamptz NOT NULL DEFAULT (now() AT TIME ZONE 'utc'::text),
     is_archived boolean NOT NULL DEFAULT false,
-    user_id uuid DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    user_id uuid NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     name text NOT NULL,
     description text
 );
@@ -43,7 +51,7 @@ CREATE TABLE api.tag_scores (
     created_at timestamptz NOT NULL DEFAULT (now() AT TIME ZONE 'utc'::text),
     updated_at timestamptz NOT NULL DEFAULT (now() AT TIME ZONE 'utc'::text),
     is_archived boolean NOT NULL DEFAULT false,
-    user_id uuid DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    user_id uuid NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     description text,
     score smallint NOT NULL
 );
@@ -55,7 +63,7 @@ CREATE TABLE api.activities (
     created_at timestamptz NOT NULL DEFAULT (now() AT TIME ZONE 'utc'::text),
     updated_at timestamptz NOT NULL DEFAULT (now() AT TIME ZONE 'utc'::text),
     is_archived boolean NOT NULL DEFAULT false,
-    user_id uuid DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    user_id uuid NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     started_at timestamptz NOT NULL,
     ended_at timestamptz NOT NULL
 );
@@ -67,7 +75,7 @@ CREATE TABLE api.activity_templates (
     created_at timestamptz NOT NULL DEFAULT (now() AT TIME ZONE 'utc'::text),
     updated_at timestamptz NOT NULL DEFAULT (now() AT TIME ZONE 'utc'::text),
     is_archived boolean NOT NULL DEFAULT false,
-    user_id uuid DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    user_id uuid NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     name text NOT NULL
 );
 
@@ -78,7 +86,7 @@ CREATE TABLE api.activity_searches (
     created_at timestamptz NOT NULL DEFAULT (now() AT TIME ZONE 'utc'::text),
     updated_at timestamptz NOT NULL DEFAULT (now() AT TIME ZONE 'utc'::text),
     is_archived boolean NOT NULL DEFAULT false,
-    user_id uuid REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    user_id uuid NOT NULL REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     name text NOT NULL,
     params json
 );
@@ -87,15 +95,15 @@ ALTER TABLE api.activity_searches ENABLE ROW LEVEL SECURITY;
 
 -- m:n profiles = profiles
 CREATE TABLE api.linked_profiles (
-    user_id uuid DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    linked_user_id uuid REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    user_id uuid NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    linked_user_id uuid NOT NULL REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY (user_id, linked_user_id)
 );
 
 -- m:n categories = tags
 CREATE TABLE api.categories_tags (
-    category_id uuid REFERENCES api.categories(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    tag_id uuid REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    category_id uuid NOT NULL REFERENCES api.categories(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    tag_id uuid NOT NULL REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY (category_id, tag_id)
 );
 
@@ -103,8 +111,8 @@ ALTER TABLE api.categories_tags ENABLE ROW LEVEL SECURITY;
 
 -- m:n tags = activities
 CREATE TABLE api.tags_activities (
-    activity_id uuid REFERENCES api.activities(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    tag_id uuid REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    activity_id uuid NOT NULL REFERENCES api.activities(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    tag_id uuid NOT NULL REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY (activity_id, tag_id)
 );
 
@@ -112,8 +120,8 @@ ALTER TABLE api.tags_activities ENABLE ROW LEVEL SECURITY;
 
 -- m:n tags = activity_templates
 CREATE TABLE api.tags_activity_templates (
-    activity_template_id uuid REFERENCES api.activity_templates(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    tag_id uuid REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    activity_template_id uuid NOT NULL REFERENCES api.activity_templates(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    tag_id uuid NOT NULL REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY (activity_template_id, tag_id)
 );
 
@@ -121,13 +129,12 @@ ALTER TABLE api.tags_activity_templates ENABLE ROW LEVEL SECURITY;
 
 -- m:n tags = activity_searches
 CREATE TABLE api.tags_activity_searches (
-    activity_search_id uuid REFERENCES api.activity_searches(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    tag_id uuid REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    activity_search_id uuid NOT NULL REFERENCES api.activity_searches(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    tag_id uuid NOT NULL REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY (activity_search_id, tag_id)
 );
 
 ALTER TABLE api.tags_activity_searches ENABLE ROW LEVEL SECURITY;
-
 
 CREATE SCHEMA IF NOT EXISTS util;
 
@@ -140,6 +147,20 @@ AS $$
      WHERE lup.user_id = (SELECT auth.uid())
 $$ STABLE LANGUAGE SQL SECURITY DEFINER;
 
+CREATE OR REPLACE FUNCTION util.set_updated_at()
+RETURNS trigger
+SET search_path = ''
+AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ VOLATILE LANGUAGE PLPGSQL SECURITY DEFINER;
+
+CREATE TRIGGER categories_updated_at_trigger
+AFTER UPDATE ON api.categories
+FOR EACH ROW
+EXECUTE FUNCTION util.set_updated_at();
 
 CREATE POLICY "Users can see their own and linked users' user profiles"
 ON api.profiles
