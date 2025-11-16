@@ -1,11 +1,12 @@
-import { data, Form, redirect } from "react-router";
+import { data, Form, NavLink, redirect } from "react-router";
 import type { Route } from "./+types/dashboard-categories-edit";
 
 import type { BreadcrumbHandle } from "~/utils/breadcrumb";
 import { supabaseContext } from "~/context";
 import { assertIsLoggedIn, isNonEmptyString, isString } from "~/utils";
-import { Input } from "~/patterns";
-import { useEffect, useRef } from "react";
+import { InputField, TextareaField } from "~/patterns";
+import { Fieldset, Legend } from "@headlessui/react";
+import { Button } from "~/patterns/Button";
 
 export const handle: BreadcrumbHandle = {
   breadcrumb: [
@@ -104,37 +105,44 @@ export async function action({ context, request, params }: Route.ActionArgs) {
 }
 
 export default function DashboardCategoriesEdit({ loaderData }: Route.ComponentProps) {
-  const { category } = loaderData
-
-  const nameInputRef = useRef<HTMLInputElement>(null);
-  const descriptionInputRef = useRef<HTMLInputElement>(null);
-  const colorInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (nameInputRef.current) {
-      nameInputRef.current.value = category.name;
-    }
-    
-    if (descriptionInputRef.current) {
-      descriptionInputRef.current.value = category.description ?? "";
-    }
-    
-    if (colorInputRef.current) {
-      colorInputRef.current.value = category.color ?? "";
-    }
-
-  }, []);
+  const { category } = loaderData;
 
   return (
-    <div>
-      <div>Edit Category "{category.name}"</div>
-
-      <Form method="put">
-        <Input ref={nameInputRef} label="Name" name="name" type="text" />
-        <Input ref={descriptionInputRef} label="Description" name="description" type="text" />
-        <Input ref={colorInputRef} label="Color" name="color" type="color" />
-        <button type="submit">Submit</button>
-      </Form>
-    </div>
+    <Form method="put" className="space-y-8">
+      <Fieldset className="space-y-4">
+        <Legend>
+          <h1 className="font-bold text-3xl">
+            Edit Category
+          </h1>
+        </Legend>
+        <InputField
+          defaultValue={category.name}
+          label="Name"
+          name="name"
+          type="text"
+        />
+        <TextareaField
+          defaultValue={category.description ?? undefined}
+          label="Description"
+          name="description"
+        />
+        <InputField
+          defaultValue={category.color ?? undefined}
+          label="Color"
+          name="color"
+          type="color"
+        />
+      </Fieldset>
+      <div className="flex items-center justify-end-safe gap-6">
+        <div className="order-2">
+          <Button type="submit">Save</Button>
+        </div>
+        <div>
+          <NavLink to={`/dashboard/categories/${category.id}`}>
+            Cancel
+          </NavLink>
+        </div>
+      </div>
+    </Form>
   ) 
 }

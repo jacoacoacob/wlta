@@ -17,3 +17,17 @@ body {
 button {
   cursor: pointer;
 }
+
+@layer components {
+  .button {
+    @apply
+      inline-flex items-center gap-2 rounded-md px-3 py-1.5
+      dark:data-focus:outline-white/25 data-focus:outline-slate-900
+  }
+
+  .button--solid {
+    @apply
+      bg-slate-800 text-slate-50
+      dark:bg-slate-50 dark:text-slate-800
+  }
+}

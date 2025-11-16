@@ -1,6 +1,7 @@
 import type { Route } from "./+types/dashboard-categories.index";
 import { data, NavLink } from "react-router";
 import { supabaseContext } from "~/context";
+import { Toolbar } from "~/patterns/Toolbar";
 
 export async function loader({ context }: Route.LoaderArgs) {
   const db = context.get(supabaseContext);
@@ -23,20 +24,26 @@ export default function DashboardCategories({ loaderData }: Route.ComponentProps
 
   return (
     <div className="flex flex-col gap-4">
-      <div>
+
+      <Toolbar className="dark:bg-transparent bg-transparent outline-none justify-between">
+        <h1 className="text-3xl font-bold flex items-center gap-3">
+          Your Categories
+        </h1>
         <NavLink
-          className="border rounded bg-blue-500 p-2 text-white"
+          className="button button--solid"
           to="/dashboard/categories/create"
         >
           + New Category
         </NavLink>
-      </div>
-      <h2 className="text-xl font-bold">Your Categories</h2>
+      </Toolbar>
       <ul className=" space-y-2">
-        {categories.map(({ id, name, description }) =>
-          <li className="border border-zinc-400 rounded flex">
+        {categories.map(({ id, name, description, color }) =>
+          <li key={id} className="border border-zinc-400 rounded flex">
             <NavLink to={`/dashboard/categories/${id}`} className="flex flex-col flex-1 p-4">
-              <h4 className="font-bold">{name}</h4>
+              <h4 className="font-bold flex items-center gap-2">
+                <div className="h-5 w-5 rounded" style={{ backgroundColor: color ?? undefined }}></div>
+                {name}
+              </h4>
               <p className="font-light">{description}</p>
             </NavLink>
           </li>

@@ -27,7 +27,6 @@ CREATE TABLE api.categories (
     is_archived boolean NOT NULL DEFAULT false,
     user_id uuid NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     name text NOT NULL,
-    -- hex code #ffaacc
     color varchar(16),
     description text
 );
@@ -205,7 +204,6 @@ TO authenticated
 USING (
     -- Both archived and non-archived categories that they own
     -- Only non-archived categories from linked profiles
-    -- TODO: Evaluate performance on this
     (SELECT auth.uid()) = user_id OR (
         user_id IN (SELECT util.get_linked_user_ids()) AND
         is_archived = false

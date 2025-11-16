@@ -3,7 +3,7 @@ import { Form, redirect } from "react-router";
 import type { Route } from "./+types/login";
 import { sessionContext, supabaseContext } from "~/context";
 import { isString } from "~/utils";
-import { Input } from "~/patterns/Input";
+import { Input } from "~/patterns/Field";
 
 export async function loader({ context }: Route.LoaderArgs) {
   const session = context.get(sessionContext);

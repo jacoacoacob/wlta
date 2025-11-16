@@ -31,7 +31,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
       <header className="flex justify-between p-4 sticky top-0">
         <DashboardBreadcrumbs />
       </header>
-      <main className="p-4">
+      <main className="p-4 max-w-3xl">
         <Outlet />
       </main>
     </div>

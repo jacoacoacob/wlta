@@ -31,7 +31,7 @@ export const DashboardBreadcrumbs: React.FC = () => {
           <Link to="/dashboard">Dashboard</Link>
         </li>
         {breadcrumbs.map(({ name, to }, index, arr) =>
-          <li className="flex gap-2">
+          <li key={name} className="flex gap-2">
             <span>/</span>
             <NavLink
               to={to}

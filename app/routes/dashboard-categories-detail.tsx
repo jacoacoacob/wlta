@@ -1,9 +1,9 @@
-import { getCategoryById } from "~/models/categories_";
 import type { Route } from "./+types/dashboard-categories-detail";
 import { data, NavLink } from "react-router";
 import type { BreadcrumbHandle } from "~/utils/breadcrumb";
 import { assertIsLoggedIn } from "~/utils";
 import { supabaseContext } from "~/context";
+import { Toolbar } from "~/patterns/Toolbar";
 
 export async function loader({ context, params }: Route.LoaderArgs) {
   const user = assertIsLoggedIn(context)
@@ -48,20 +48,20 @@ export const handle: BreadcrumbHandle = {
 export default function DashboardCategoriesDetail({ loaderData }: Route.ComponentProps) {
   const { category } = loaderData;
 
-  const { name, description } = category;
+  const { name, color, description } = category;
 
   return (
     <div className="flex flex-col gap-4">
-      <h1>Category: {name}</h1>
-      <p>{description}</p>
-      <div>
-        <NavLink
-          className="border rounded bg-blue-500 p-2 text-white"
-          to="edit"
-        >
+      <Toolbar className="dark:bg-transparent bg-transparent outline-none justify-between">
+        <h1 className="text-3xl font-bold flex items-center gap-3">
+          <div className="h-6 w-6 rounded" style={{ backgroundColor: color ?? undefined }}></div>
+          {name}
+        </h1>
+        <NavLink className="button button--solid" to="edit">
           Edit
         </NavLink>
-      </div>
+      </Toolbar>
+      <p>{description}</p>
       <pre>{JSON.stringify(category, null, 2)}</pre>
     </div>
   ) 
