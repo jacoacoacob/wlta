@@ -2,6 +2,7 @@ import type { Route } from "./+types/dashboard-categories.index";
 import { data, NavLink } from "react-router";
 import { supabaseContext } from "~/context";
 import { Toolbar } from "~/patterns/Toolbar";
+import type { BreadcrumbHandle } from "~/utils";
 
 export async function loader({ context }: Route.LoaderArgs) {
   const db = context.get(supabaseContext);
@@ -19,7 +20,7 @@ export async function loader({ context }: Route.LoaderArgs) {
   return { categories };
 }
 
-export default function DashboardCategories({ loaderData }: Route.ComponentProps) {
+export default function DashboardCategoriesIndex({ loaderData }: Route.ComponentProps) {
   const { categories } = loaderData;
 
   return (
@@ -36,7 +37,7 @@ export default function DashboardCategories({ loaderData }: Route.ComponentProps
           + New Category
         </NavLink>
       </Toolbar>
-      <ul className=" space-y-2">
+      <ul className="space-y-2">
         {categories.map(({ id, name, description, color }) =>
           <li key={id} className="border border-zinc-400 rounded flex">
             <NavLink to={`/dashboard/categories/${id}`} className="flex flex-col flex-1 p-4">

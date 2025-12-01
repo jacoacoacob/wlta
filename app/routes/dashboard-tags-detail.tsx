@@ -1,24 +1,27 @@
-import type { Route } from "./+types/dashboard-categories-detail";
-import { data, NavLink } from "react-router";
-import type { BreadcrumbHandle } from "~/utils/breadcrumb";
-import { assertIsLoggedIn } from "~/utils";
+import { assertIsLoggedIn, type BreadcrumbHandle } from "~/utils";
+import type { Route } from "./+types/dashboard-tags-detail";
 import { supabaseContext } from "~/context";
+import { data, NavLink } from "react-router";
 import { Toolbar } from "~/patterns/Toolbar";
 
 export async function loader({ context, params }: Route.LoaderArgs) {
-  const user = assertIsLoggedIn(context)
-  
+  const user = assertIsLoggedIn(context);
+
   const db = context.get(supabaseContext);
 
-  const { data: category, error } = await db
-    .schema('api')
-    .from("categories")
+  const { data: tag, error } = await db
+    .schema("api")
+    .from("tags")
     .select(`
       *,
-      tags (*)
+      categories (
+        id,
+        name,
+        description
+      )
     `)
     .eq("user_id", user.id)
-    .eq("id", params.categoryId)
+    .eq("id", params.tagId)
     .eq("is_archived", false)
     .single();
 
@@ -26,36 +29,35 @@ export async function loader({ context, params }: Route.LoaderArgs) {
     console.warn(error);
   }
 
-  if (!category) {
+  if (!tag) {
     throw data(error, { status: 404 });
   }
 
-  return { category };
+  return { tag };
 }
 
 export const handle: BreadcrumbHandle = {
   breadcrumb: ({ loaderData }) => {
-    const { category } = loaderData as Route.ComponentProps["loaderData"];
+    const { tag } = loaderData as Route.ComponentProps["loaderData"];
 
-    const { name, id } = category;
+    const { name, id } = tag;
 
     return {
       name,
-      to: `/dashboard/categories/${id}` 
+      to: `/dashboard/tags/${id}`,
     };
   },
-}
+};
 
-export default function DashboardCategoriesDetail({ loaderData }: Route.ComponentProps) {
-  const { category } = loaderData;
+export default function DashboardTagsDetail({ loaderData }: Route.ComponentProps) {
+  const { tag } = loaderData;
 
-  const { name, color, description } = category;
-
+  const { name, description } = tag;
+  
   return (
     <div className="flex flex-col gap-4">
       <Toolbar className="dark:bg-transparent bg-transparent outline-none justify-between">
         <h1 className="text-3xl font-bold flex items-center gap-3">
-          <div className="h-6 w-6 rounded" style={{ backgroundColor: color ?? undefined }}></div>
           {name}
         </h1>
         <NavLink className="button button--solid" to="edit">
@@ -63,6 +65,12 @@ export default function DashboardCategoriesDetail({ loaderData }: Route.Componen
         </NavLink>
       </Toolbar>
       <p>{description}</p>
+
+      {!!tag.categories && tag.categories.length > 0 && (
+        <section>
+          <h2>Categories</h2>
+        </section>
+      )}
     </div>
-  ) 
+  )
 }

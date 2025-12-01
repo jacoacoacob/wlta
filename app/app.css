@@ -30,4 +30,10 @@ button {
       bg-slate-800 text-slate-50
       dark:bg-slate-50 dark:text-slate-800
   }
+
+  .link {
+    @apply
+      text-pink-500 
+      dark:text-pink-400
+  }
 }

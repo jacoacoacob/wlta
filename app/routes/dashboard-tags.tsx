@@ -3,12 +3,12 @@ import type { BreadcrumbHandle } from "~/utils/breadcrumb";
 
 export const handle: BreadcrumbHandle = {
   breadcrumb: () => ({
-    name: "Categories",
-    to: "/dashboard/categories"
+    name: "Tags",
+    to: "/dashboard/tags"
   }),
 }
 
-export default function DashboardCategories() {
+export default function DashboardTags() {
   return (
     <Outlet />
   ) 

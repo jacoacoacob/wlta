@@ -2,7 +2,7 @@ import type { Route } from "./+types/login";
 import { supabaseContext } from "~/context";
 import { Form, redirect } from "react-router";
 import { assertIsNotLoggedIn, isString } from "~/utils";
-import { Input } from "~/patterns";
+import { InputField } from "~/patterns";
 
 export async function loader({ context }: Route.LoaderArgs) {
   assertIsNotLoggedIn(context);
@@ -54,7 +54,7 @@ export default function AuthConfirm({ actionData }: Route.ComponentProps) {
         {JSON.stringify(error, null, 2)}
       </pre>
       <Form method="post">
-        <Input name="token" type="text" label="Token" />
+        <InputField name="token" type="text" label="Token" />
         <button type="submit">Verify</button>
       </Form>
     </>

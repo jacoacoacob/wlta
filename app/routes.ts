@@ -1,4 +1,4 @@
-import { type RouteConfig, index, layout, route } from "@react-router/dev/routes";
+import { type RouteConfig, index, layout, route, prefix } from "@react-router/dev/routes";
 
 export default [
   index("routes/home.tsx"),
@@ -27,7 +27,32 @@ export default [
             "routes/dashboard-categories-edit.tsx",
           ),
         ]
-      )
+      ),
+      route(
+        "tags",
+        "routes/dashboard-tags.tsx",
+        [
+          index("routes/dashboard-tags.index.tsx"),
+          route(
+            "create",
+            "routes/dashboard-tags-create.tsx",
+          ),
+          route(
+            ":tagId",
+            "routes/dashboard-tags-detail.tsx",
+          ),
+          route(
+            ":tagId/edit",
+            "routes/dashboard-tags-edit.tsx",
+          ),
+        ],
+      ),
+    ]
+  ),
+  ...prefix(
+    "api",
+    [
+      route("tags-categories", "routes/api-tags-categories.ts"),
     ]
   ),
   layout(

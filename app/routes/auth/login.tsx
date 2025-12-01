@@ -3,7 +3,7 @@ import { Form, redirect } from "react-router";
 import type { Route } from "./+types/login";
 import { sessionContext, supabaseContext } from "~/context";
 import { isString } from "~/utils";
-import { Input } from "~/patterns/Field";
+import { InputField } from "~/patterns/Field";
 
 export async function loader({ context }: Route.LoaderArgs) {
   const session = context.get(sessionContext);
@@ -41,7 +41,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
         {JSON.stringify(error, null, 2)}
       </pre>
       <Form method="post">
-        <Input name="email" type="email" label="Email" />
+        <InputField name="email" type="email" label="Email" />
         <button type="submit">Login</button>
       </Form>
     </div>

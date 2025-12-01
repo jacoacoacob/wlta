@@ -228,3 +228,36 @@ ON api.categories
 FOR DELETE
 TO authenticated
 USING ((SELECT auth.uid()) = user_id);
+
+
+CREATE POLICY "Users can see their own and shared tags"
+ON api.tags
+FOR SELECT
+TO authenticated
+USING (
+    -- Both archived and non-archived tags that they own
+    -- Only non-archived tags from linked profiles
+    (SELECT auth.uid()) = user_id OR (
+        user_id IN (SELECT util.get_linked_user_ids()) AND
+        is_archived = false
+    )
+);
+
+CREATE POLICY "Users can create new tags"
+ON api.tags
+FOR INSERT
+TO authenticated
+WITH CHECK ((SELECT auth.uid()) = user_id);
+
+CREATE POLICY "Users can update their own tags"
+ON api.tags
+FOR UPDATE
+TO authenticated
+USING ((SELECT auth.uid()) = user_id)
+WITH CHECK ((SELECT auth.uid()) = user_id);
+
+CREATE POLICY "Users can delete their own tags"
+ON api.tags
+FOR DELETE
+TO authenticated
+USING ((SELECT auth.uid()) = user_id);
