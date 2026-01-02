@@ -1,4 +1,4 @@
-import { assertIsNonEmptyString, isNonEmptyString } from "./typeguards";
+import { assertIsString, isNonEmptyString } from "./typeguards";
 
 
 /**
@@ -11,7 +11,7 @@ import { assertIsNonEmptyString, isNonEmptyString } from "./typeguards";
 export function getFormString(formData: FormData, fieldName: string) {
   const value = formData.get(fieldName);
 
-  assertIsNonEmptyString(value, fieldName);
+  assertIsString(value, fieldName);
 
   return value;
 }

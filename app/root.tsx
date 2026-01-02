@@ -10,8 +10,10 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import { supabaseClientMiddleware, supbaseServerMiddleware } from "./middleware/supabase.middleware";
 import { sessionClientMiddleware, sessionServerMiddleware } from "./middleware/session.middleware";
+import { loggingServerMiddleware } from "./middleware/logging.middleware";
 
 export const middleware: Route.MiddlewareFunction[] = [
+  loggingServerMiddleware,
   supbaseServerMiddleware,
   sessionServerMiddleware,
 ];

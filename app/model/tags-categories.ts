@@ -1,33 +1,37 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "~/database.types";
+import type { BaseModelParams } from "./_utils";
 
 export namespace TagsCategogies {
-  
-  interface TagsCategoriesParams {
-    db: SupabaseClient<Database>;
-    tag_id: string;
-    category_id: string;
-  }
 
-  export function create({ db, category_id, tag_id }: TagsCategoriesParams) {
+  interface CreateParams extends Omit<BaseModelParams, "user"> {
+    category_id: string;
+    tag_id: string;
+  }
+  
+  export function create({ db, category_id, tag_id }: CreateParams) {
     return db
       .schema("api")
       .from("categories_tags")
       .insert({ category_id, tag_id })
-      .select();
+      .select()
+      .single();
+  }
+  
+  interface DestroyParams extends BaseModelParams {
+    category_id: string;
+    tag_id: string;
   }
 
-  export async function remove({
+  export function destroy({
     db,
     category_id,
     tag_id,
-  }: TagsCategoriesParams) {
+    user
+  }: DestroyParams) {
     return db
       .schema("api")
       .from("categories_tags")
       .delete()
-      .match({ category_id, tag_id })
-      .select()
+      .match({ category_id, tag_id, user_id: user.id });
   }
 
 }

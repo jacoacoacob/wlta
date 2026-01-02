@@ -17,7 +17,7 @@ export type Database = {
           is_archived: boolean
           started_at: string
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string
@@ -26,7 +26,7 @@ export type Database = {
           is_archived?: boolean
           started_at: string
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Update: {
           created_at?: string
@@ -35,7 +35,7 @@ export type Database = {
           is_archived?: boolean
           started_at?: string
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -47,7 +47,7 @@ export type Database = {
           name: string
           params: Json | null
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string
@@ -56,7 +56,7 @@ export type Database = {
           name: string
           params?: Json | null
           updated_at?: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           created_at?: string
@@ -65,7 +65,7 @@ export type Database = {
           name?: string
           params?: Json | null
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -76,7 +76,7 @@ export type Database = {
           is_archived: boolean
           name: string
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string
@@ -84,7 +84,7 @@ export type Database = {
           is_archived?: boolean
           name: string
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Update: {
           created_at?: string
@@ -92,7 +92,7 @@ export type Database = {
           is_archived?: boolean
           name?: string
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -105,7 +105,7 @@ export type Database = {
           is_archived: boolean
           name: string
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           color?: string | null
@@ -115,7 +115,7 @@ export type Database = {
           is_archived?: boolean
           name: string
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Update: {
           color?: string | null
@@ -125,7 +125,7 @@ export type Database = {
           is_archived?: boolean
           name?: string
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -133,14 +133,17 @@ export type Database = {
         Row: {
           category_id: string
           tag_id: string
+          user_id: string
         }
         Insert: {
           category_id: string
           tag_id: string
+          user_id?: string
         }
         Update: {
           category_id?: string
           tag_id?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -180,21 +183,21 @@ export type Database = {
           handle: string | null
           id: string | null
           photo: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           display_name?: string | null
           handle?: string | null
           id?: string | null
           photo?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Update: {
           display_name?: string | null
           handle?: string | null
           id?: string | null
           photo?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -206,7 +209,7 @@ export type Database = {
           is_archived: boolean
           score: number
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string
@@ -215,7 +218,7 @@ export type Database = {
           is_archived?: boolean
           score: number
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Update: {
           created_at?: string
@@ -224,7 +227,7 @@ export type Database = {
           is_archived?: boolean
           score?: number
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -236,7 +239,7 @@ export type Database = {
           is_archived: boolean
           name: string
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string
@@ -245,7 +248,7 @@ export type Database = {
           is_archived?: boolean
           name: string
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Update: {
           created_at?: string
@@ -254,7 +257,7 @@ export type Database = {
           is_archived?: boolean
           name?: string
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -262,14 +265,17 @@ export type Database = {
         Row: {
           activity_id: string
           tag_id: string
+          user_id: string
         }
         Insert: {
           activity_id: string
           tag_id: string
+          user_id?: string
         }
         Update: {
           activity_id?: string
           tag_id?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -292,14 +298,17 @@ export type Database = {
         Row: {
           activity_search_id: string
           tag_id: string
+          user_id: string
         }
         Insert: {
           activity_search_id: string
           tag_id: string
+          user_id?: string
         }
         Update: {
           activity_search_id?: string
           tag_id?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -322,14 +331,17 @@ export type Database = {
         Row: {
           activity_template_id: string
           tag_id: string
+          user_id: string
         }
         Insert: {
           activity_template_id: string
           tag_id: string
+          user_id?: string
         }
         Update: {
           activity_template_id?: string
           tag_id?: string
+          user_id?: string
         }
         Relationships: [
           {

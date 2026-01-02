@@ -101,6 +101,7 @@ CREATE TABLE api.linked_profiles (
 
 -- m:n categories = tags
 CREATE TABLE api.categories_tags (
+    user_id uuid NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     category_id uuid NOT NULL REFERENCES api.categories(id) ON UPDATE CASCADE ON DELETE CASCADE,
     tag_id uuid NOT NULL REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY (category_id, tag_id)
@@ -110,6 +111,7 @@ ALTER TABLE api.categories_tags ENABLE ROW LEVEL SECURITY;
 
 -- m:n tags = activities
 CREATE TABLE api.tags_activities (
+    user_id uuid NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     activity_id uuid NOT NULL REFERENCES api.activities(id) ON UPDATE CASCADE ON DELETE CASCADE,
     tag_id uuid NOT NULL REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY (activity_id, tag_id)
@@ -119,6 +121,7 @@ ALTER TABLE api.tags_activities ENABLE ROW LEVEL SECURITY;
 
 -- m:n tags = activity_templates
 CREATE TABLE api.tags_activity_templates (
+    user_id uuid NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     activity_template_id uuid NOT NULL REFERENCES api.activity_templates(id) ON UPDATE CASCADE ON DELETE CASCADE,
     tag_id uuid NOT NULL REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY (activity_template_id, tag_id)
@@ -128,6 +131,7 @@ ALTER TABLE api.tags_activity_templates ENABLE ROW LEVEL SECURITY;
 
 -- m:n tags = activity_searches
 CREATE TABLE api.tags_activity_searches (
+    user_id uuid NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     activity_search_id uuid NOT NULL REFERENCES api.activity_searches(id) ON UPDATE CASCADE ON DELETE CASCADE,
     tag_id uuid NOT NULL REFERENCES api.tags(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY (activity_search_id, tag_id)
@@ -261,3 +265,52 @@ ON api.tags
 FOR DELETE
 TO authenticated
 USING ((SELECT auth.uid()) = user_id);
+
+
+CREATE POLICY "Users can see their own and shared category-tag links"
+ON api.categories_tags
+FOR SELECT
+TO authenticated
+USING (
+  (SELECT auth.uid()) = user_id OR (
+    user_id IN (SELECT util.get_linked_user_ids())
+  )
+);
+
+CREATE POLICY "Users can create their own category-tag links"
+ON api.categories_tags
+FOR INSERT
+TO authenticated
+WITH CHECK (
+  (SELECT EXISTS (
+    SELECT 1
+    FROM api.categories c
+    JOIN api.tags       t
+      ON (
+        t.id = tag_id AND
+        t.user_id = (SELECT auth.uid())
+      ) AND (
+        c.id = category_id AND
+        c.user_id = (SELECT auth.uid())
+      )
+  ))
+);
+
+CREATE POLICY "Users can destroy their own category-tag links"
+ON api.categories_tags
+FOR DELETE
+TO authenticated
+USING (
+  (SELECT EXISTS (
+    SELECT 1
+    FROM api.categories c
+    JOIN api.tags       t
+      ON (
+        t.id = tag_id AND
+        t.user_id = (SELECT auth.uid())
+      ) AND (
+        c.id = category_id AND
+        c.user_id = (SELECT auth.uid())
+      )
+  ))
+)

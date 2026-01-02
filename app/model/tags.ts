@@ -41,4 +41,24 @@ export namespace Tags {
       .eq("user_id", user.id)
       .eq("is_archived", isArchived);
   }
+
+  interface UpdateTagsParams extends BaseModelParams {
+    name?: string;
+    description?: string;
+  }
+
+  export async function update({
+    db,
+    user,
+    name,
+    description
+  }: UpdateTagsParams) {
+    return db
+      .schema("api")
+      .from("tags")
+      .update({ name, description })
+      .match({
+        user_id: user.id,
+      });
+  }
 }

@@ -2,6 +2,14 @@ export function isString(data: unknown): data is string {
   return typeof data === "string";
 }
 
+export function assertIsString(data: unknown, valueName?: string): asserts data is string {
+  if (!isString(data)) {
+    throw new TypeError(
+      `${valueName ?? "value"} must be a string, instead received ${data}`,
+    )
+  }
+}
+
 export function isNumber(data: unknown): data is number {
   return typeof data === "string" && !Number.isNaN(data);
 }

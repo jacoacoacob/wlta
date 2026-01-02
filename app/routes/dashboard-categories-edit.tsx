@@ -1,14 +1,14 @@
-import { data, Form, NavLink, redirect, useFetcher } from "react-router";
+import { data, Form, NavLink, redirect } from "react-router";
 import type { Route } from "./+types/dashboard-categories-edit";
 
 import type { BreadcrumbHandle } from "~/utils/breadcrumb";
 import { supabaseContext } from "~/context";
-import { assertIsLoggedIn, isNonEmptyString, isString } from "~/utils";
+import { assertIsLoggedIn } from "~/utils";
 import { InputField, TextareaField } from "~/patterns";
 import { Fieldset, Legend } from "@headlessui/react";
 import { Button } from "~/patterns/Button";
 import { Toolbar } from "~/patterns/Toolbar";
-import { TagsCategoriesForm } from "~/features/TagsCategoriesForm";
+import { CategoryTagsForm } from "~/features/TagsCategoriesForm";
 import { getFormString } from "~/utils/form-data";
 import { Categories } from "~/model/categories";
 import { Tags } from "~/model/tags";
@@ -126,7 +126,7 @@ export default function DashboardCategoriesEdit({ loaderData }: Route.ComponentP
         </div>
       </Form>
 
-      {!!tags && <TagsCategoriesForm categoryId={category.id} tags={tags} />}
+      <CategoryTagsForm category={category} tags={tags} />
     </div>
   ) 
 }

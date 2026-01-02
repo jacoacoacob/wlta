@@ -7,11 +7,13 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
+    "test": "vitest run",
     "typecheck": "react-router typegen && tsc",
     "supabase:typegen:local": "supabase gen types typescript --local --schema api > app/database.types.ts"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
+    "@heroicons/react": "^2.2.0",
     "@react-router/node": "^7.9.6",
     "@react-router/serve": "^7.9.6",
     "@supabase/ssr": "^0.7.0",
@@ -22,16 +24,25 @@
     "react-router": "^7.9.6"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@eslint/json": "^0.14.0",
     "@react-router/dev": "^7.9.6",
     "@tailwindcss/vite": "^4.1.17",
     "@types/node": "^20.19.25",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^16.5.0",
+    "jiti": "^2.6.1",
     "supabase": "^2.63.1",
     "tailwindcss": "^4.1.17",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.50.1",
     "vite": "^6.4.1",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.0.16"
   },
   "packageManager": "pnpm@10.18.0+sha512.e804f889f1cecc40d572db084eec3e4881739f8dec69c0ff10d2d1beff9a4e309383ba27b5b750059d7f4c149535b6cd0d2cb1ed3aeb739239a4284a68f40cfa",
   "pnpm": {

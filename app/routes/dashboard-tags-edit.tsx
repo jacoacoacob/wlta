@@ -8,6 +8,10 @@ import { InputField, TextareaField } from "~/patterns";
 import { Fieldset, Legend } from "@headlessui/react";
 import { Button } from "~/patterns/Button";
 import { Toolbar } from "~/patterns/Toolbar";
+import { getFormString } from "~/utils/form-data";
+import { Tags } from "~/model/tags";
+import { TagsCategoriesForm } from "~/features/TagsCategoriesForm";
+import { Categories } from "~/model/categories";
 
 export const handle: BreadcrumbHandle = {
   breadcrumb: [
@@ -29,27 +33,26 @@ export async function loader({ context, params }: Route.LoaderArgs) {
   
   const db = context.get(supabaseContext);
 
-  const { data: tag, error } = await db
-    .schema('api')
-    .from("tags")
-    .select(`
-      *,
-      categories (*)
-    `)
-    .eq("user_id", user.id)
-    .eq("id", params.tagId)
-    .eq("is_archived", false)
-    .single();
+  const { data: tag, error: tagError } = await Tags.getById({
+    db,
+    user,
+    tagId: params.tagId,
+  });
 
-  if (error) {
-    console.warn(error);
+  if (tagError) {
+    console.warn(tagError);
   }
 
   if (!tag) {
-    throw data(error, { status: 404 });
+    throw data(tagError, { status: 404 });
   }
 
-  return { tag };
+  const { data: categories } = await Categories.getList({
+    db,
+    user,
+  });
+
+  return { tag, categories };
 }
 
 export async function action({ context, request, params }: Route.ActionArgs) {
@@ -57,35 +60,17 @@ export async function action({ context, request, params }: Route.ActionArgs) {
 
   const formData = await request.formData();
 
-  const name = formData.get("name");
-  const description = formData.get("description");
-
-  if (!isNonEmptyString(name)) {
-    return {
-      error:{
-        message: "You must give this category a name",
-      }
-    }
-  }
-
-  if (!isString(description) || typeof description === "undefined") {
-    return {
-      error: {
-        message: "Invalid value for description",
-      },
-    };
-  }
+  const name = getFormString(formData, "name");
+  const description = getFormString(formData, "description");
 
   const db = context.get(supabaseContext);
 
-  const { error } = await db
-    .schema("api")
-    .from("tags")
-    .update({ name, description })
-    .eq("user_id", user.id)
-    .eq("id", params.tagId)
-    .select("id")
-    .single();
+  const { error } = await Tags.update({
+    db,
+    user,
+    name,
+    description
+  });
 
   if (error) {
     console.warn(error);
@@ -97,36 +82,42 @@ export async function action({ context, request, params }: Route.ActionArgs) {
 }
 
 export default function DashboardCategoriesEdit({ loaderData }: Route.ComponentProps) {
-  const { tag } = loaderData;
+  const { tag, categories } = loaderData;
+
+  const tagCategoryIds = tag.categories.map((category) => category.id);
 
   return (
-    <Form method="put" className="space-y-8">
-      <Fieldset className="space-y-4">
-        <Legend>
-          <Toolbar heading="Edit Tag" />
-        </Legend>
-        <InputField
-          defaultValue={tag.name}
-          label="Name"
-          name="name"
-          type="text"
-        />
-        <TextareaField
-          defaultValue={tag.description ?? undefined}
-          label="Description"
-          name="description"
-        />
-      </Fieldset>
-      <div className="flex items-center justify-end-safe gap-6">
-        <div className="order-2">
-          <Button type="submit">Save</Button>
+    <div>
+      <Form method="put" className="space-y-8">
+        <Fieldset className="space-y-4">
+          <Legend>
+            <Toolbar heading="Edit Tag" />
+          </Legend>
+          <InputField
+            defaultValue={tag.name}
+            label="Name"
+            name="name"
+            type="text"
+          />
+          <TextareaField
+            defaultValue={tag.description ?? undefined}
+            label="Description"
+            name="description"
+          />
+        </Fieldset>
+        <div className="flex items-center justify-end-safe gap-6">
+          <div className="order-2">
+            <Button type="submit">Save</Button>
+          </div>
+          <div>
+            <NavLink to={`/dashboard/tags/${tag.id}`}>
+              Cancel
+            </NavLink>
+          </div>
         </div>
-        <div>
-          <NavLink to={`/dashboard/tags/${tag.id}`}>
-            Cancel
-          </NavLink>
-        </div>
-      </div>
-    </Form>
+      </Form>
+      
+      <TagsCategoriesForm tagId={tag.id} categories={categories} selected={tagCategoryIds} />
+    </div>
   ) 
 }
