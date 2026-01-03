@@ -13,9 +13,9 @@ const links = [
 
 export default function DashboardIndex() {
   return (
-    <div className="flex flex-col items-center gap-8 ">
+    <div className="flex flex-col items-center gap-8">
       {links.map(({ to, text }) =>
-        <NavLink to={to} className="p-4 border rounded self-stretch flex-1">
+        <NavLink key={to} to={to} className="p-4 border rounded self-stretch flex-1">
           <h2 className="font-bold text-lg">{text}</h2>
         </NavLink>
       )}
