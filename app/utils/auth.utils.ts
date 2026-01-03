@@ -14,7 +14,7 @@ export function deriveIsLoggedIn(context: Readonly<RouterContextProvider>) {
  * @param context 
  * @param redirectPath defaults to `"/login"`
  */
-export function assertIsLoggedIn(
+export function getAssertIsLoggedIn(
   context: Readonly<RouterContextProvider>,
   redirectPath: string = "/login"
 ) {

@@ -2,15 +2,15 @@ import { data, NavLink } from "react-router";
 import { Toolbar } from "~/patterns/Toolbar";
 import type { Route } from "./+types/dashboard-tags.index";
 import { supabaseContext } from "~/context";
-import { Tags } from "~/model/tags";
-import { assertIsLoggedIn } from "~/utils";
+import { TagsModel } from "~/model";
+import { getAssertIsLoggedIn } from "~/utils";
 
 export async function loader({ context }: Route.LoaderArgs) {
-  const user = assertIsLoggedIn(context);
+  const user = getAssertIsLoggedIn(context);
   
   const db = context.get(supabaseContext);
   
-  const { data: tags, error } = await Tags.getList({ db, user });
+  const { data: tags, error } = await TagsModel.getList({ db, user });
 
   if (error) {
     console.warn(error);

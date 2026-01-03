@@ -1,5 +1,5 @@
 import { RouterContextProvider } from "react-router";
-import { assertIsLoggedIn } from "~/utils";
+import { getAssertIsLoggedIn } from "~/utils";
 
 interface AuthServerMiddlewareParams {
   context: Readonly<RouterContextProvider>
@@ -8,5 +8,5 @@ interface AuthServerMiddlewareParams {
 export const authServerMiddleware = async ({
   context
 }: AuthServerMiddlewareParams) => {
-  assertIsLoggedIn(context, "/");
+  getAssertIsLoggedIn(context, "/");
 }

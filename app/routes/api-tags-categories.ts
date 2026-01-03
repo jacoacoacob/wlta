@@ -3,7 +3,7 @@ import type { Route } from "./+types/api-tags-categories";
 import { supabaseContext } from "~/context";
 import { getFormString } from "~/utils/form-data";
 import { TagsCategogies } from "~/model/tags-categories";
-import { assertIsLoggedIn } from "~/utils";
+import { getAssertIsLoggedIn } from "~/utils";
 
 const STRATEGIES = ["create", "destroy"] as const;
 
@@ -21,7 +21,7 @@ function assertIsStrategy(data: unknown): asserts data is Strategy {
 
 export async function action({ context, request }: Route.ActionArgs) {
   try {
-    const user = assertIsLoggedIn(context);
+    const user = getAssertIsLoggedIn(context);
   
     const db = context.get(supabaseContext);
   

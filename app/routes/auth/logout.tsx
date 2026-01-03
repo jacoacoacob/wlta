@@ -1,7 +1,6 @@
 import { supabaseContext } from "~/context";
 import type { Route } from "./+types/logout";
 import { redirect } from "react-router";
-import { assertIsLoggedIn } from "~/utils";
 
 export async function loader({ context }: Route.LoaderArgs) {
   const supabase = context.get(supabaseContext);

@@ -9,9 +9,9 @@ export namespace Categories {
     db,
     user,
     categoryId,
-    isArchived = false
+    is_archived = false
   }: GetCategoryByIdParams) {
-    return db
+    return await db
       .schema('api')
       .from("categories")
       .select(`
@@ -20,21 +20,21 @@ export namespace Categories {
       `)
       .eq("user_id", user.id)
       .eq("id", categoryId)
-      .eq("is_archived", isArchived)
+      .eq("is_archived", is_archived)
       .single();
   }
   
   export async function getList({
     db,
     user,
-    isArchived = false,
+    is_archived = false,
   }: BaseModelParams) {
-    return db
+    return await db
       .schema("api")
       .from("categories")
       .select("*")
       .eq("user_id", user.id)
-      .eq("is_archived", isArchived);
+      .eq("is_archived", is_archived);
   }
 
   interface CreateCategoryParams extends Omit<BaseModelParams, "user"> {
@@ -49,7 +49,7 @@ export namespace Categories {
     description,
     color
   }: CreateCategoryParams) {
-    return db
+    return await db
       .schema("api")
       .from("categories")
       .insert({ name, description, color })
@@ -72,7 +72,7 @@ export namespace Categories {
     description,
     color
   }: UpdateCategoryParams) {
-    return db
+    return await db
       .schema("api")
       .from("categories")
       .update({ name, description, color })

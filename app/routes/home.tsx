@@ -1,11 +1,10 @@
-import { deriveIsLoggedIn, isNull } from "~/utils";
+import { deriveIsLoggedIn } from "~/utils";
 import type { Route } from "./+types/home";
-import { sessionContext, supabaseContext } from "~/context";
 import { Link } from "react-router";
 import { GlobalHeader } from "~/features/GlobalHeader";
 import { ProfileMenu } from "~/features/ProfileMenu";
 
-export function meta({}: Route.MetaArgs) {
+export function meta() {
   return [
     { title: "Work and Leisure Time Tracker" },
     { name: "description", content: "Track how you spend your time!" },

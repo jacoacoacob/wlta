@@ -1,7 +1,6 @@
 import type { BreadcrumbHandle } from "~/utils/breadcrumb";
 import type { Route } from "./+types/dashboard-categories-create";
 import { supabaseContext } from "~/context";
-import { isNonEmptyString } from "~/utils";
 import { Form, NavLink, redirect } from "react-router";
 import { InputField, TextareaField } from "~/patterns";
 import { Button } from "~/patterns/Button";

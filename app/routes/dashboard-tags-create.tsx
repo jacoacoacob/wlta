@@ -5,6 +5,7 @@ import { Button } from "~/patterns/Button";
 import { isNonEmptyString, type BreadcrumbHandle } from "~/utils";
 import type { Route } from "./+types/dashboard-tags-create";
 import { supabaseContext } from "~/context";
+import { TagsService } from "~/service/tags.service";
 
 export const handle: BreadcrumbHandle = {
   breadcrumb: () => ({
@@ -14,27 +15,7 @@ export const handle: BreadcrumbHandle = {
 };
 
 export async function action({ context, request }: Route.ActionArgs) {
-  const formData = await request.formData();
-
-  const name = formData.get("name");
-  const description = formData.get("description");
-
-  if (!isNonEmptyString(name)) {
-    return {
-      error: {
-        message: "A tag must have a name!"
-      }
-    }
-  }
-
-  const db = context.get(supabaseContext);
-
-  const { data, error } = await db
-    .schema("api")
-    .from("tags")
-    .insert({ name, description })
-    .select("id")
-    .single();
+  const { data, error } = await TagsService.create({ context, request });
 
   if (error) {
     console.warn(error);

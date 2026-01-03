@@ -1,6 +1,6 @@
 import type React from "react";
 import { Description, Field, Input, Textarea, Label, type FieldProps, type InputProps, type TextareaProps } from '@headlessui/react'
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import { SearchInput, type SearchInputProps } from "./SearchInput";
 
 interface InputFieldProps {
@@ -39,7 +39,6 @@ interface BaseFieldProps<Variant extends InputComponentPropsUnion["_variant"]> e
 }
 
 const BaseField: React.FC<BaseFieldProps<InputComponentPropsUnion["_variant"]>> = ({
-  _variant,
   label,
   description,
   InputComponent,
@@ -89,6 +88,8 @@ export const InputField = memo<InputFieldProps>(
   )
 );
 
+InputField.displayName = "InputField";
+
 interface TextareaFieldProps extends TextareaProps {
   label?: string;
   description?: string;
@@ -109,6 +110,8 @@ export const TextareaField = memo<TextareaFieldProps>(
     />
   )
 );
+
+TextareaField.displayName = "TextareaField";
 
 interface SearchInputFieldProps extends SearchInputProps {
   label?: string;
@@ -133,3 +136,5 @@ export const SearchInputField = memo<SearchInputFieldProps>(
     </Field>
   )
 );
+
+SearchInputField.displayName = "SearchInputField";

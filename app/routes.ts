@@ -47,12 +47,29 @@ export default [
           ),
         ],
       ),
+      route(
+        "activities",
+        "routes/dashboard-activities.tsx",
+        [
+          index("routes/dashboard-activities.index.tsx"),
+          route(
+            "create",
+            "routes/dashboard-activities.create.tsx"
+          ),
+          route(
+            ":activityId",
+            "routes/dashboard-activities.detail.tsx"
+          ),
+
+        ]
+      )
     ]
   ),
   ...prefix(
     "api",
     [
       route("tags-categories", "routes/api-tags-categories.ts"),
+      route("tags/search", "routes/api-tags-search.ts"),
     ]
   ),
   layout(

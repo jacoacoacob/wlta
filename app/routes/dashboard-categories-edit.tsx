@@ -3,15 +3,15 @@ import type { Route } from "./+types/dashboard-categories-edit";
 
 import type { BreadcrumbHandle } from "~/utils/breadcrumb";
 import { supabaseContext } from "~/context";
-import { assertIsLoggedIn } from "~/utils";
+import { getAssertIsLoggedIn } from "~/utils";
 import { InputField, TextareaField } from "~/patterns";
 import { Fieldset, Legend } from "@headlessui/react";
 import { Button } from "~/patterns/Button";
 import { Toolbar } from "~/patterns/Toolbar";
 import { CategoryTagsForm } from "~/features/TagsCategoriesForm";
 import { getFormString } from "~/utils/form-data";
-import { Categories } from "~/model/categories";
-import { Tags } from "~/model/tags";
+import { Categories, TagsModel } from "~/model";
+
 
 export const handle: BreadcrumbHandle = {
   breadcrumb: [
@@ -29,7 +29,7 @@ export const handle: BreadcrumbHandle = {
 }
 
 export async function loader({ context, params }: Route.LoaderArgs) {
-  const user = assertIsLoggedIn(context)
+  const user = getAssertIsLoggedIn(context)
   
   const db = context.get(supabaseContext);
 
@@ -47,7 +47,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
     throw data(error, { status: 404 });
   }
 
-  const { data: tags } = await Tags.getList({ db, user });
+  const { data: tags } = await TagsModel.getList({ db, user });
 
   return {
     /** The category matching the categoryId in the URL params */
@@ -58,7 +58,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
 }
 
 export async function action({ context, request, params }: Route.ActionArgs) {
-  const user = assertIsLoggedIn(context);
+  const user = getAssertIsLoggedIn(context);
 
   const formData = await request.formData();
 

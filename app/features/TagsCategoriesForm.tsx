@@ -1,9 +1,7 @@
-import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Field, Label, Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react";
+import { useCallback, useMemo, useState } from "react";
 import { useFetcher } from "react-router";
-import type { Database } from "~/database.types";
 import { SearchInputField } from "~/patterns";
-import { isObject, isString } from "~/utils";
 import { cn } from "~/utils/cn";
 import type { TagsCategoriesPropsUnion } from "./TagsCategoriesForm/tags-categories-form.types";
 import { deriveSearchOptions } from "./TagsCategoriesForm/tags-categories-form.model";
@@ -11,18 +9,12 @@ import { isCategoryTagsProps } from "./TagsCategoriesForm/tags-categories-form.t
 import { mapKeys } from "~/utils/map-keys";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
 import { Categories } from "~/model/categories";
-import type { Tags } from "~/model/tags";
-import { TagsCategogies } from "~/model/tags-categories";
-
-
-type ApiTableRow<Table extends keyof Database["api"]["Tables"]> = Database["api"]["Tables"][Table]["Row"];
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ModelData<Query extends (...args: any) => any> = Awaited<ReturnType<Query>>["data"];
+import type { TagsModel } from "~/model/tags";
+import type { ModelData } from "~/model/_utils";
 
 interface CategoryTagsFormProps {
   category: NonNullable<ModelData<typeof Categories.getById>>;
-  tags: ModelData<typeof Tags.getList> | undefined;
+  tags: ModelData<typeof TagsModel.getList> | undefined;
 }
 
 /*

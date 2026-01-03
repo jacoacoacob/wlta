@@ -3,13 +3,13 @@ import type { Route } from "./+types/dashboard-tags-edit";
 
 import type { BreadcrumbHandle } from "~/utils/breadcrumb";
 import { supabaseContext } from "~/context";
-import { assertIsLoggedIn, isNonEmptyString, isString } from "~/utils";
+import { getAssertIsLoggedIn } from "~/utils";
 import { InputField, TextareaField } from "~/patterns";
 import { Fieldset, Legend } from "@headlessui/react";
 import { Button } from "~/patterns/Button";
 import { Toolbar } from "~/patterns/Toolbar";
 import { getFormString } from "~/utils/form-data";
-import { Tags } from "~/model/tags";
+import { TagsModel } from "~/model/tags";
 import { TagsCategoriesForm } from "~/features/TagsCategoriesForm";
 import { Categories } from "~/model/categories";
 
@@ -29,11 +29,11 @@ export const handle: BreadcrumbHandle = {
 }
 
 export async function loader({ context, params }: Route.LoaderArgs) {
-  const user = assertIsLoggedIn(context)
+  const user = getAssertIsLoggedIn(context)
   
   const db = context.get(supabaseContext);
 
-  const { data: tag, error: tagError } = await Tags.getById({
+  const { data: tag, error: tagError } = await TagsModel.getById({
     db,
     user,
     tagId: params.tagId,
@@ -56,7 +56,7 @@ export async function loader({ context, params }: Route.LoaderArgs) {
 }
 
 export async function action({ context, request, params }: Route.ActionArgs) {
-  const user = assertIsLoggedIn(context);
+  const user = getAssertIsLoggedIn(context);
 
   const formData = await request.formData();
 
@@ -65,7 +65,7 @@ export async function action({ context, request, params }: Route.ActionArgs) {
 
   const db = context.get(supabaseContext);
 
-  const { error } = await Tags.update({
+  const { error } = await TagsModel.update({
     db,
     user,
     name,

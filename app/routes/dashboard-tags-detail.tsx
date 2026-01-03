@@ -1,11 +1,11 @@
-import { assertIsLoggedIn, type BreadcrumbHandle } from "~/utils";
+import { getAssertIsLoggedIn, type BreadcrumbHandle } from "~/utils";
 import type { Route } from "./+types/dashboard-tags-detail";
 import { supabaseContext } from "~/context";
 import { data, NavLink } from "react-router";
 import { Toolbar } from "~/patterns/Toolbar";
 
 export async function loader({ context, params }: Route.LoaderArgs) {
-  const user = assertIsLoggedIn(context);
+  const user = getAssertIsLoggedIn(context);
 
   const db = context.get(supabaseContext);
 

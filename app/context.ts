@@ -1,6 +1,8 @@
 import { createContext } from "react-router";
 import * as supabase from "@supabase/supabase-js";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { authServerMiddleware } from "./middleware/auth.middleware";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { supbaseServerMiddleware } from "./middleware/supabase.middleware";
 import type { Database } from "~/database.types";
 

@@ -1,5 +1,5 @@
 import { Link, NavLink, useMatches } from "react-router";
-import { isBreadcrumbHandle, type Breadcrumb, type BreadcrumbHandle } from "~/utils/breadcrumb";
+import { isBreadcrumbHandle, type Breadcrumb } from "~/utils/breadcrumb";
 
 export const DashboardBreadcrumbs: React.FC = () => {
   const matches = useMatches();
@@ -28,7 +28,7 @@ export const DashboardBreadcrumbs: React.FC = () => {
     <nav>
       <ul className="flex gap-2">
         <li>
-          <Link to="/dashboard">Dashboard</Link>
+          <Link to="/dashboard">Home</Link>
         </li>
         {breadcrumbs.map(({ name, to }, index, arr) =>
           <li key={name} className="flex gap-2">
