@@ -35,7 +35,7 @@ export default [
           index("routes/dashboard-tags.index.tsx"),
           route(
             "create",
-            "routes/dashboard-tags-create.tsx",
+            "routes/dashboard-tags.create.tsx",
           ),
           route(
             ":tagId",
@@ -69,7 +69,8 @@ export default [
     "api",
     [
       route("tags-categories", "routes/api-tags-categories.ts"),
-      route("tags/search", "routes/api-tags-search.ts"),
+      route("tags/search", "routes/api-tags.search.ts"),
+      route("tags/create", "routes/api-tags.create.ts"),
     ]
   ),
   layout(

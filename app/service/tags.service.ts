@@ -17,6 +17,13 @@ export namespace TagsService {
   
     const { data: tag, error } = await TagsModel.create({ db, name, description });
 
+    // lines 23-27 look absurdly redundant in terms of runtime logic
+    // but this way does type narrowing better than just returning
+    // what TagsModel.create returns
+    if (error) {
+      return { error, tag }
+    }
+
     return { tag, error };
   }
   

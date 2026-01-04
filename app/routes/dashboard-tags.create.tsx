@@ -2,10 +2,9 @@ import { Fieldset, Legend } from "@headlessui/react";
 import { Form, NavLink, redirect } from "react-router";
 import { InputField, TextareaField } from "~/patterns";
 import { Button } from "~/patterns/Button";
-import { isNonEmptyString, type BreadcrumbHandle } from "~/utils";
-import type { Route } from "./+types/dashboard-tags-create";
-import { supabaseContext } from "~/context";
-import { TagsService } from "~/service/tags.service";
+import { type BreadcrumbHandle } from "~/utils";
+import type { Route } from "./+types/dashboard-tags.create";
+import { TagsService } from "~/service";
 
 export const handle: BreadcrumbHandle = {
   breadcrumb: () => ({
@@ -15,7 +14,7 @@ export const handle: BreadcrumbHandle = {
 };
 
 export async function action({ context, request }: Route.ActionArgs) {
-  const { data, error } = await TagsService.create({ context, request });
+  const { tag, error } = await TagsService.create({ context, request });
 
   if (error) {
     console.warn(error);
@@ -23,7 +22,7 @@ export async function action({ context, request }: Route.ActionArgs) {
     return { error };
   }
 
-  return redirect(`/dashboard/tags/${data.id}`);
+  return redirect(`/dashboard/tags/${tag.id}`);
 }
 
 export default function DashboardTagsCreate() {

@@ -8,6 +8,7 @@ import { TagsActivities } from "~/model/tags-activities";
 import { Form, NavLink, redirect } from "react-router";
 import { Fieldset, Legend } from "@headlessui/react";
 import { InputField } from "~/patterns";
+import { CreateActivityTagsForm } from "~/features/CreateActivityTagsForm";
 
 export const handle: BreadcrumbHandle = {
   breadcrumb: () => ({
@@ -93,6 +94,7 @@ export default function DashboardActivitiesCreate({
         <InputField label="Started At" name="started_at" type="datetime-local" defaultValue={formattedNow} />
         <InputField label="Ended At" name="ended_at" type="datetime-local" />
 
+        <CreateActivityTagsForm />
 
       </Fieldset>
     </Form>
