@@ -86,16 +86,11 @@ export namespace TagsModel {
     name,
     is_archived = false,
   }: SearchParams) {
-
-    const builder = db
+    return await db
       .schema("api")
       .from("tags")
-      .select("*");
-
-    if (name.trim().length > 0) {
-      builder.ilike("name", name);
-    }
-
-    return await builder.match({ user_id: user.id, is_archived });
+      .select("*")
+      .match({ user_id: user.id, is_archived })
+      .ilike("name", `%${name}%`);
   }
 }

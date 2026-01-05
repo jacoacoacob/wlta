@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function makeDebouncer<Callback extends (...args: any) => any>(
   delay: number,
@@ -19,12 +18,9 @@ interface CacheEntry<Data> {
   data: Data | undefined;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useCachedFetch<Fetcher extends (...args: any) => Promise<any>>(
-  key: string,
-  fetcher: Fetcher
-) {
-  const [cache, setCache] = useState<Record<string, CacheEntry<Awaited<ReturnType<Fetcher>>>>>({});
+export function useCachedFetcher<Data>(query: string) {
+  const [cache, setCache] = useState<Record<string, CacheEntry<Data>>>({});
+  const [visitedQueries, setVisitedQueries] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     let isActive = true;
@@ -34,30 +30,39 @@ export function useCachedFetch<Fetcher extends (...args: any) => Promise<any>>(
         return;
       }
 
-      if (cache[key] && cache[key].data) {
+      if (visitedQueries[query]) {
         return;
       }
 
       setCache({
         ...cache,
-        [key]: {
-          ...cache[key],
+        [query]: {
+          ...cache[query],
           status: "pending",
         }
       });
+      
+      const response = await fetch(query);
 
-      const result = await fetcher();
+      const data = await response.json();
       
       if (!isActive) {
         return;
       }
+      
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       setCache({
         ...cache,
-        [key]: {
+        [query]: {
           status: "idle",
-          data: result
+          data: data as CacheEntry<Data>["data"]
         }
+      });
+
+      setVisitedQueries({
+        ...visitedQueries,
+        [query]: true,
       });
 
     });
@@ -70,11 +75,11 @@ export function useCachedFetch<Fetcher extends (...args: any) => Promise<any>>(
   // Explicitly excluding cache to prevent infinite render loop
   // in consuming component  
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetcher, key]);
+  }, [query, visitedQueries]);
 
-  if (!cache[key]) {
+  if (!cache[query]) {
     return { data: undefined, status: "idle" }
   }
 
-  return cache[key];
+  return cache[query];
 }

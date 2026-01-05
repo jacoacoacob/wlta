@@ -9,7 +9,7 @@ import { isCategoryTagsProps } from "./TagsCategoriesForm/tags-categories-form.t
 import { mapKeys } from "~/utils/map-keys";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
 import { Categories } from "~/model/categories";
-import type { TagsModel } from "~/model/tags";
+import type { TagsModel } from "~/model/tags.model";
 import type { ModelData } from "~/model/_utils";
 
 interface CategoryTagsFormProps {

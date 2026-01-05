@@ -7,9 +7,10 @@
 // If successful, the API will respond with the newly created tag `id` and the compnent will add it to the tagIDs array ref
 
 import { Combobox } from "@headlessui/react"
-import { useCallback, useState } from "react"
-import { useCachedFetch } from "./_utils";
+import { useMemo, useState } from "react"
+import { useCachedFetcher } from "./_utils";
 import { InputField } from "~/patterns";
+import type { TagsService } from "~/service";
 
 // # Steps
 // [x] Create a tag search API
@@ -18,20 +19,12 @@ import { InputField } from "~/patterns";
 // [x] Set up a debouncing mechanism
 // [x] Set up a caching mechanism
 
-function delay(duration: number) {
-  return new Promise((resolve) => setTimeout(resolve, duration));
-}
-
 export const CreateActivityTagsForm: React.FC = () => {
   const [query, setQuery] = useState("");
 
-  const fetcher = useCallback(async () => {
-    await delay(2000);
+  const cacheKey = useMemo(() => `/api/tags/search?name=${encodeURIComponent(query)}`, [query])
 
-    return query.toUpperCase();
-  }, [query])
-
-  const { data, status } = useCachedFetch(query, fetcher);
+  const { data, status } = useCachedFetcher<Awaited<ReturnType<typeof TagsService.search>>>(cacheKey);
 
   return (
     <div>

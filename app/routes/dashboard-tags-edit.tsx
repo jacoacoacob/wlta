@@ -9,7 +9,7 @@ import { Fieldset, Legend } from "@headlessui/react";
 import { Button } from "~/patterns/Button";
 import { Toolbar } from "~/patterns/Toolbar";
 import { getFormString } from "~/utils/form-data";
-import { TagsModel } from "~/model/tags";
+import { TagsModel } from "~/model/tags.model";
 import { TagsCategoriesForm } from "~/features/TagsCategoriesForm";
 import { Categories } from "~/model/categories";
 

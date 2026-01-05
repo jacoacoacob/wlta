@@ -1,7 +1,7 @@
 import { getAssertIsLoggedIn, getDb } from "~/utils";
 import type { ServiceParams } from "./_utils";
 import { getFormString, getOptionalFormString } from "~/utils/form-data";
-import { TagsModel } from "~/model/tags";
+import { TagsModel } from "~/model/tags.model";
 
 export namespace TagsService {
 
@@ -41,6 +41,11 @@ export namespace TagsService {
     if (error) {
       return { error, tags: [] };
     }
+
+    console.log(
+      "TAGS SERVICE",
+      { tags: tags.map(({ name }) => name), name }
+    );
 
     return { tags };
   }
