@@ -42,11 +42,6 @@ export namespace TagsService {
       return { error, tags: [] };
     }
 
-    console.log(
-      "TAGS SERVICE",
-      { tags: tags.map(({ name }) => name), name }
-    );
-
     return { tags };
   }
 }

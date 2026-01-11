@@ -14,17 +14,17 @@ export function makeDebouncer<Callback extends (...args: any) => any>(
   }
 }
 
-interface CacheEntry<Data> {
+export interface CacheEntry<Data> {
   status: "idle" | "pending";
   data: Data | undefined;
 }
 
-const DEFAULT_DEBOUNCE = 300;
+const DEFAULT_DEBOUNCE = 200;
 const DEFAULT_EXPIRY = 30_000;
 
 interface UseCachedFetcherOptions {
   /**
-   * How long (in milliseconds) to after the last change to `url` before initiating fetch. Defaults to {@link DEFAULT_DEBOUNCE} (0.3 seconds)
+   * How long (in milliseconds) to after the last change to `url` before initiating fetch. Defaults to {@link DEFAULT_DEBOUNCE} (0.2 seconds)
    */
   debounce?: number;
   /**
