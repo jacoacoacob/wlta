@@ -8,9 +8,10 @@
 
 import { Combobox } from "@headlessui/react"
 import { useMemo, useState } from "react"
-import { useCachedFetcher } from "./_utils";
+
 import { InputField } from "~/patterns";
 import type { TagsService } from "~/service";
+import { useCachedFetcher } from "~/utils";
 
 // # Steps
 // [x] Create a tag search API
@@ -22,9 +23,9 @@ import type { TagsService } from "~/service";
 export const CreateActivityTagsForm: React.FC = () => {
   const [query, setQuery] = useState("");
 
-  const cacheKey = useMemo(() => `/api/tags/search?name=${encodeURIComponent(query)}`, [query])
+  const url = useMemo(() => `/api/tags/search?name=${encodeURIComponent(query)}`, [query])
 
-  const { data, status } = useCachedFetcher<Awaited<ReturnType<typeof TagsService.search>>>(cacheKey);
+  const { data, status } = useCachedFetcher<Awaited<ReturnType<typeof TagsService.search>>>(url);
 
   return (
     <div>

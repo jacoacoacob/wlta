@@ -4,3 +4,4 @@ export * from "./breadcrumb";
 export * from "./types";
 export * from "./map-keys";
 export * from "./get-db";
+export * from "./use-cached-fetcher";

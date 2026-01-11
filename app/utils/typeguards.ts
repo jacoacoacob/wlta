@@ -11,7 +11,7 @@ export function assertIsString(data: unknown, valueName?: string): asserts data 
 }
 
 export function isNumber(data: unknown): data is number {
-  return typeof data === "string" && !Number.isNaN(data);
+  return typeof data === "number" && !Number.isNaN(data);
 }
 
 export function isNonEmptyString(data: unknown): data is string {
@@ -38,6 +38,7 @@ export function isNullOrUndefined(data: unknown): data is null | undefined {
   return isNull(data) || isUndefined(data);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isObject(data: unknown): data is { [key: string]: any } {
   return typeof data === "object" && !isNull(data);
 }
