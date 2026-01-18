@@ -1,48 +1,37 @@
-import { getAssertIsLoggedIn, getDb } from "~/utils";
-import type { ServiceParams } from "./_utils";
-import { getFormString, getOptionalFormString } from "~/utils/form-data";
+import { BaseService } from "./_utils";
 import { TagsModel } from "~/model/tags.model";
 
-export namespace TagsService {
+export class TagsService extends BaseService {
+  async createTag() {
+    const { db, getForm } = this;
 
-  export async function create({ context, request }: ServiceParams) {
-    getAssertIsLoggedIn(context);
-  
-    const db = getDb(context);
-  
-    const formData = await request.formData();
-  
-    const name = getFormString(formData, "name");
-    const description = getOptionalFormString(formData, "description");
-  
+    const form = await getForm();
+
+    const name = form.getString("name");
+    const description = form.getOptionalString("description");
+
     const { data: tag, error } = await TagsModel.create({ db, name, description });
 
-    // lines 23-27 look absurdly redundant in terms of runtime logic
-    // but this way does type narrowing better than just returning
-    // what TagsModel.create returns
     if (error) {
       return { error, tag }
     }
 
-    return { tag, error };
+    return { error, tag };
   }
-  
-  export async function search({ context, request }: ServiceParams) {
-    const user = getAssertIsLoggedIn(context);
-  
-    const db = getDb(context);
-  
+
+  async searchTags() {
+    const { db, request, user } = this;
+
     const url = new URL(request.url);
 
     const name = url.searchParams.get("name") ?? "";
 
-    const { data: tags, error } = await TagsModel.search({ db, user, name });
-    
+    const { data: tags, error } = await TagsModel.search({ db, name, user });
+
     if (error) {
-      return { error, tags: [] };
+      return { error, tags };
     }
 
-    return { tags };
+    return { tags, error };
   }
 }
-

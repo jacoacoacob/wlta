@@ -8,9 +8,9 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   const activitiesService = new ActivitiesService({ context, request });
 
-  const { data: activities, error } = await activitiesService.getActivityList();
+  const { activities, error } = await activitiesService.getActivityList();
 
-  if (!activities) {
+  if (error) {
     throw data(error, { status: 404 });
   }
 
@@ -39,7 +39,7 @@ export default function DashboardActivitiesIndex({ loaderData }: Route.Component
                 )}
               </h4>
               <p className="font-light">
-                <DateTime timestamp={started_at} /> - <DateTime timestamp={ended_at ?? ""} />
+                <DateTime timestamp={started_at} /> {ended_at && "-"} <DateTime timestamp={ended_at} fallback="- Incomplete" />
               </p>
             </NavLink>
           </li>

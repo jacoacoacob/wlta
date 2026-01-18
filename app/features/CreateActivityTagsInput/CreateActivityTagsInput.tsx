@@ -23,7 +23,7 @@ import { cn } from "~/utils";
 // [x] Set up a debouncing mechanism
 // [x] Set up a caching mechanism
 
-type Tags = Awaited<ReturnType<typeof TagsService.search>>;
+type TagsSearchResult = Awaited<ReturnType<InstanceType<typeof TagsService>["searchTags"]>>;
 
 type Tag = ApiTableRow<"tags">;
 
@@ -32,7 +32,7 @@ export const CreateActivityTagsInput: React.FC = () => {
 
   const url = useMemo(() => `/api/tags/search?name=${encodeURIComponent(query)}`, [query])
 
-  const { data: comboboxOptions, status } = useCachedFetcher<Tags>(url);
+  const { data: comboboxOptions, status } = useCachedFetcher<TagsSearchResult>(url);
 
   const newTagFetcher = useFetcher();
 
@@ -98,7 +98,7 @@ export const CreateActivityTagsInput: React.FC = () => {
             'transition duration-100 ease-in data-leave:data-closed:opacity-0'
           )}
         >
-          {comboboxOptions?.tags.map((tag) =>
+          {comboboxOptions?.tags?.map((tag) =>
             <ComboboxOption
               key={tag.id}
               value={tag}

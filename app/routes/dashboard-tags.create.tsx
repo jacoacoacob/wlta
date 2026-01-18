@@ -14,7 +14,7 @@ export const handle: BreadcrumbHandle = {
 };
 
 export async function action({ context, request }: Route.ActionArgs) {
-  const { tag, error } = await TagsService.create({ context, request });
+  const { tag, error } = await new TagsService({ context, request }).createTag();
 
   if (error) {
     console.warn(error);

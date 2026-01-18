@@ -12,20 +12,20 @@ export interface ServiceParams {
 export class BaseService {
   protected db: SupabaseClient<Database>;
   protected user: User;
+  protected request: Request;
   
-  private _request: Request;
   private _formData: null | FormData = null;
 
   constructor({ context, request }: ServiceParams) {
-    this._request = request;
+    this.request = request;
 
     this.db = getDb(context);
     this.user = getAssertIsLoggedIn(context);
   }
 
-  protected async getForm() {
+  protected getForm = async () => {
     if (isNull(this._formData)) {
-      this._formData = await this._request.formData();
+      this._formData = await this.request.formData();
     }
 
     const formData = this._formData;

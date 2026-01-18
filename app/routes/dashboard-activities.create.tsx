@@ -1,10 +1,7 @@
-import { getAssertIsLoggedIn, isNonEmptyString, isString, type BreadcrumbHandle } from "~/utils";
+import { getAssertIsLoggedIn, isString, type BreadcrumbHandle } from "~/utils";
 import type { Route } from "./+types/dashboard-activities.create";
 import { TagsModel } from "~/model";
 import { supabaseContext } from "~/context";
-import { getFormString, getOptionalFormString } from "~/utils/form-data";
-import { ActivitiesModel } from "~/model/activities.model";
-import { TagsActivities } from "~/model/tags-activities";
 import { Form, NavLink, redirect, useSubmit } from "react-router";
 import { Button, Fieldset, Legend } from "@headlessui/react";
 import { InputField } from "~/patterns";
@@ -31,7 +28,7 @@ export async function loader({ context }: Route.LoaderArgs) {
 export async function action({ context, request }: Route.ActionArgs) {
   const activitiesService = new ActivitiesService({ context, request });
 
-  const { data: activity, error } = await activitiesService.createActivity();
+  const { activity, error } = await activitiesService.createActivity();
 
   if (error) {
     return { error };
