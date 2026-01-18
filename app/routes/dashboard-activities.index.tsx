@@ -1,21 +1,14 @@
-import { getAssertIsLoggedIn } from "~/utils";
 import type { Route } from "./+types/dashboard-activities.index";
-import { supabaseContext } from "~/context";
-import { Activities } from "~/model/activities";
 import { data, NavLink } from "react-router";
 import { Toolbar } from "~/patterns/Toolbar";
 import { DateTime } from "~/features/DateTime";
+import { ActivitiesService } from "~/services/activities.service";
 
-export async function loader({ context }: Route.LoaderArgs) {
-  const user = getAssertIsLoggedIn(context);
+export async function loader({ context, request }: Route.LoaderArgs) {
 
-  const db = context.get(supabaseContext);
+  const activitiesService = new ActivitiesService({ context, request });
 
-  const { data: activities, error } = await Activities.getList({ db, user });
-
-  if (error) {
-    console.warn(error);
-  }
+  const { data: activities, error } = await activitiesService.getActivityList();
 
   if (!activities) {
     throw data(error, { status: 404 });
@@ -46,7 +39,7 @@ export default function DashboardActivitiesIndex({ loaderData }: Route.Component
                 )}
               </h4>
               <p className="font-light">
-                <DateTime timestamp={started_at} /> - <DateTime timestamp={ended_at} />
+                <DateTime timestamp={started_at} /> - <DateTime timestamp={ended_at ?? ""} />
               </p>
             </NavLink>
           </li>

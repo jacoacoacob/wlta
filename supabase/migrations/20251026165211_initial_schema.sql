@@ -64,7 +64,7 @@ CREATE TABLE api.activities (
     is_archived boolean NOT NULL DEFAULT false,
     user_id uuid NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     started_at timestamptz NOT NULL,
-    ended_at timestamptz NOT NULL
+    ended_at timestamptz
 );
 
 ALTER TABLE api.activities ENABLE ROW LEVEL SECURITY;
@@ -214,7 +214,7 @@ USING (
     )
 );
 
-CREATE POLICY "Users can create new categories"
+CREATE POLICY "Users can create their own categories"
 ON api.categories
 FOR INSERT
 TO authenticated
@@ -313,4 +313,34 @@ USING (
         c.user_id = (SELECT auth.uid())
       )
   ))
-)
+);
+
+CREATE POLICY "Users can see their own and shared activities"
+ON api.activities
+FOR SELECT
+TO authenticated
+USING (
+    (SELECT auth.uid()) = user_id OR (
+        user_id IN (SELECT util.get_linked_user_ids()) AND
+        is_archived = false
+    )
+);
+
+CREATE POLICY "Users can create their own activities"
+ON api.activities
+FOR INSERT
+TO authenticated
+WITH CHECK ((SELECT auth.uid()) = user_id);
+
+CREATE POLICY "Users can update their own activities"
+ON api.activities
+FOR UPDATE
+TO authenticated
+USING ((SELECT auth.uid()) = user_id)
+WITH CHECK ((SELECT auth.uid()) = user_id);
+
+CREATE POLICY "Users can delete their own activites"
+ON api.activities
+FOR DELETE
+TO authenticated
+USING ((SELECT auth.uid()) = user_id);

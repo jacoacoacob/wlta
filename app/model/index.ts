@@ -1,4 +1,4 @@
-export * from "./activities";
+export * from "./activities.model";
 export * from "./categories";
 export * from "./tags.model";
 export * from "./tags-activities";

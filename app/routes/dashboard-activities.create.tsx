@@ -1,14 +1,16 @@
-import { getAssertIsLoggedIn, isNonEmptyString, type BreadcrumbHandle } from "~/utils";
+import { getAssertIsLoggedIn, isNonEmptyString, isString, type BreadcrumbHandle } from "~/utils";
 import type { Route } from "./+types/dashboard-activities.create";
 import { TagsModel } from "~/model";
 import { supabaseContext } from "~/context";
 import { getFormString, getOptionalFormString } from "~/utils/form-data";
-import { Activities } from "~/model/activities";
+import { ActivitiesModel } from "~/model/activities.model";
 import { TagsActivities } from "~/model/tags-activities";
-import { Form, NavLink, redirect } from "react-router";
-import { Fieldset, Legend } from "@headlessui/react";
+import { Form, NavLink, redirect, useSubmit } from "react-router";
+import { Button, Fieldset, Legend } from "@headlessui/react";
 import { InputField } from "~/patterns";
 import { CreateActivityTagsInput } from "~/features/CreateActivityTagsInput";
+import { useCallback, type FormEventHandler } from "react";
+import { ActivitiesService } from "~/services/activities.service";
 
 export const handle: BreadcrumbHandle = {
   breadcrumb: () => ({
@@ -27,33 +29,12 @@ export async function loader({ context }: Route.LoaderArgs) {
 }
 
 export async function action({ context, request }: Route.ActionArgs) {
-  getAssertIsLoggedIn(context);
-  
-  const db = context.get(supabaseContext);
+  const activitiesService = new ActivitiesService({ context, request });
 
-  const formData = await request.formData();
-
-  const started_at = getFormString(formData, "started_at");
-  const ended_at = getFormString(formData, "ended_at");
-
-  const { data: activity, error } = await Activities.create({ db, started_at, ended_at });
+  const { data: activity, error } = await activitiesService.createActivity();
 
   if (error) {
-    console.warn(error);
-
     return { error };
-  }
-
-  const tags = getOptionalFormString(formData, "tags");
-
-  if (isNonEmptyString(tags)) {
-    const tagIDs: string[] = JSON.parse(tags);
-
-    await Promise.all(
-      tagIDs.map((tag_id) =>
-        TagsActivities.create({ db, tag_id, activity_id: activity.id })
-      )
-    );
   }
 
   return redirect(`/dashboard/activities/${activity.id}`);
@@ -76,10 +57,46 @@ export default function DashboardActivitiesCreate({
   const hour = pad(now.getHours());
   const minute = pad(now.getMinutes());
 
-  const formattedNow = `${year}-${month}-${day}T${hour}:${minute}`
+  const formattedNow = `${year}-${month}-${day}T${hour}:${minute}`;
+
+  const submit = useSubmit();
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback((ev) => {
+    ev.preventDefault();
+    
+    const formData = new FormData(ev.currentTarget);
+
+    function toUTCDateString(data: FormDataEntryValue | null) {
+      if (isString(data)) {
+        try {
+          return new Date(data).toISOString();
+        } catch { /* empty */ }
+      }
+
+      return "";
+    }
+
+    function csvToStringArray(data: FormDataEntryValue | null) {
+      if (isString(data)) {
+        return data.split(",");
+      }
+
+      return "";
+    }
+
+    submit(
+      {
+        started_at: toUTCDateString(formData.get("started_at")),
+        ended_at: toUTCDateString(formData.get("ended_at")),
+        tags: csvToStringArray(formData.get("tags")),
+      },
+      { method: "post" }
+    );
+
+  }, [submit]);  
 
   return (
-    <Form method="post" className="space-y-8">
+    <Form method="post" className="space-y-8" onSubmit={handleSubmit}>
       <Fieldset className="space-y-4">
         <Legend>
           <h1 className="font-bold text-3xl">
@@ -91,11 +108,17 @@ export default function DashboardActivitiesCreate({
             <NavLink className="link underline" to="/dashboard/tags">Tag</NavLink>. 
           </p>
         </Legend>
-        <InputField label="Started At" name="started_at" type="datetime-local" defaultValue={formattedNow} />
+        <InputField
+          label="Started At"
+          name="started_at"
+          type="datetime-local"
+          defaultValue={formattedNow}
+        />
         <InputField label="Ended At" name="ended_at" type="datetime-local" />
 
         <CreateActivityTagsInput />
 
+        <Button type="submit">Save</Button>
       </Fieldset>
     </Form>
   )

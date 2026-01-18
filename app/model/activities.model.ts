@@ -1,11 +1,11 @@
 import type { BaseModelParams } from "./_utils";
 
 
-export namespace Activities {
+export namespace ActivitiesModel {
   
   interface CreateParams extends Omit<BaseModelParams, "user"> {
     started_at: string;
-    ended_at: string;
+    ended_at: string | null;
   }
 
   export async function create({
@@ -32,6 +32,7 @@ export namespace Activities {
       .select(`
         *,
         tags (
+          id,
           name
         )
       `)
@@ -51,7 +52,10 @@ export namespace Activities {
     return await db
       .schema("api")
       .from("activities")
-      .select("*")
+      .select(`
+        *,
+        tags (*)
+      `)
       .match({
         id: activityId,
         user_id: user.id,

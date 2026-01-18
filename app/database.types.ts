@@ -12,7 +12,7 @@ export type Database = {
       activities: {
         Row: {
           created_at: string
-          ended_at: string
+          ended_at: string | null
           id: string
           is_archived: boolean
           started_at: string
@@ -21,7 +21,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          ended_at: string
+          ended_at?: string | null
           id?: string
           is_archived?: boolean
           started_at: string
@@ -30,7 +30,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          ended_at?: string
+          ended_at?: string | null
           id?: string
           is_archived?: boolean
           started_at?: string

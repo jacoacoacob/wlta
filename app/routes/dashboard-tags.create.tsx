@@ -4,7 +4,7 @@ import { InputField, TextareaField } from "~/patterns";
 import { Button } from "~/patterns/Button";
 import { type BreadcrumbHandle } from "~/utils";
 import type { Route } from "./+types/dashboard-tags.create";
-import { TagsService } from "~/service";
+import { TagsService } from "~/services";
 
 export const handle: BreadcrumbHandle = {
   breadcrumb: () => ({

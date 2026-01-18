@@ -6,13 +6,13 @@
 // Selecting "Create new tag" will call an API to create a new tag.
 // If successful, the API will respond with the newly created tag `id` and the compnent will add it to the tagIDs array ref
 
-import { Button, Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react"
+import { Button, Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Input } from "@headlessui/react"
 import { CheckIcon, ChevronDownIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { useCallback, useMemo, useState } from "react"
 import { useFetcher } from "react-router";
 import type { ApiTableRow } from "~/model/_utils";
 
-import type { TagsService } from "~/service";
+import type { TagsService } from "~/services";
 import { useCachedFetcher } from "~/utils";
 import { cn } from "~/utils";
 
@@ -53,6 +53,7 @@ export const CreateActivityTagsInput: React.FC = () => {
 
   return (
     <div>
+      <Input hidden readOnly name="tags" value={selectedTags.map((tag) => tag.id)} />
       <Combobox
         multiple
         value={selectedTags}
